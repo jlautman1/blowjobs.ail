@@ -1,29 +1,25 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/environment_provider.dart';
 
 class ApiService {
-  late final Dio _dio;
+  final Dio _dio;
   String? _authToken;
+  final Ref _ref;
 
-  // Change this to your backend URL
-  // For local development: http://localhost:8080/api/v1
-  // For Docker: http://localhost:8080/api/v1
-  static const String baseUrl = String.fromEnvironment(
-    'API_URL',
-    defaultValue: 'http://localhost:8080/api/v1',
-  );
-
-  ApiService() {
-    _dio = Dio(BaseOptions(
-      baseUrl: baseUrl,
+  ApiService(this._ref) : _dio = Dio(BaseOptions(
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {
         'Content-Type': 'application/json',
       },
-    ));
-
+    )) {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
+        // Update base URL from environment provider
+        final apiUrl = _ref.read(apiUrlProvider);
+        options.baseUrl = apiUrl;
+        
         if (_authToken != null) {
           options.headers['Authorization'] = 'Bearer $_authToken';
         }
@@ -138,6 +134,15 @@ class ApiService {
       'direction': direction,
     });
     return response.data;
+  }
+
+  Future<List<dynamic>> getSwipeHistory() async {
+    final response = await _dio.get('/swipes/history');
+    return response.data;
+  }
+
+  Future<void> resetSwipes() async {
+    await _dio.delete('/swipes/reset');
   }
 
   // Match endpoints

@@ -163,7 +163,17 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
           // Attachment button
           IconButton(
             onPressed: () {
-              // TODO: Add attachment
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('File attachments coming soon! 📎'),
+                  backgroundColor: AppColors.primary,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
             },
             icon: const Icon(Iconsax.attach_circle),
             color: AppColors.textTertiary,

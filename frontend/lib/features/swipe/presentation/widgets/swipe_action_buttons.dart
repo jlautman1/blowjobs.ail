@@ -8,6 +8,7 @@ class SwipeActionButtons extends StatelessWidget {
   final VoidCallback onLike;
   final VoidCallback onSuperLike;
   final VoidCallback? onUndo;
+  final VoidCallback? onInfo;
   final AnimationController pulseController;
 
   const SwipeActionButtons({
@@ -16,6 +17,7 @@ class SwipeActionButtons extends StatelessWidget {
     required this.onLike,
     required this.onSuperLike,
     this.onUndo,
+    this.onInfo,
     required this.pulseController,
   });
 
@@ -77,9 +79,7 @@ class SwipeActionButtons extends StatelessWidget {
             icon: Iconsax.info_circle,
             color: AppColors.accent,
             size: 48,
-            onTap: () {
-              // TODO: Show job details
-            },
+            onTap: onInfo,
             tooltip: 'Details',
           ),
         ],
