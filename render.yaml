@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: blowjobs-backend
+    env: go
+    region: oregon
+    rootDir: backend
+    buildCommand: go mod download && go build -o server ./cmd/server
+    startCommand: ./server
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: GIN_MODE
+        value: release
+      - key: DATABASE_URL
+        fromDatabase:
+          name: blowjobs-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ENVIRONMENT
+        value: production
+
+databases:
+  - name: blowjobs-db
+    databaseName: blowjobs
+    user: blowjobs_user
+    plan: free
+
