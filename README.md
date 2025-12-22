@@ -1,513 +1,221 @@
-# 🚀 BlowJobs.ai - Don't Blow This Job Opportunity!
+## 🚀 BlowJobs.ai – AI-Powered Job Matching
 
-<p align="center">
-  <strong>AI-powered job matching app that connects job seekers with recruiters through an engaging swipe interface.</strong>
-</p>
-
-<p align="center">
-  <a href="#-quick-start">Quick Start</a> •
-  <a href="#-prerequisites">Prerequisites</a> •
-  <a href="#-running-the-app">Running</a> •
-  <a href="#-testing-on-different-platforms">Testing</a> •
-  <a href="#-testing-on-your-phone-via-network-easiest-for-any-phone">📱 Phone Testing</a> •
-  <a href="#-features">Features</a>
-</p>
+Modern swipe-based job matching for job seekers and recruiters, built with **Go**, **PostgreSQL**, and **Flutter Web**.
 
 ---
 
-## 🚀 Quick Start
+## 1. General Info
+
+- **Getting the code** (for people new to git)
+- **Setting up the backend & database**
+- **Running the website on your computer**
+- **Testing the website on your phone (same WiFi)**
+- **Testing on a real phone with a USB cable (Android & iPhone)**
+- **Testing on an Android emulator**
+- **Test profiles (demo accounts) you can use**
+
+Everything below assumes you are starting from scratch.
+
+---
+
+### 1.1 Get the Code (Clone the Repo)
+
+### 1.1 Install Git (if you don’t have it)
+
+- **Windows**: Install from `https://git-scm.com/download/win`
+- **macOS**: `xcode-select --install` or install from `https://git-scm.com`
+- **Linux (Debian/Ubuntu)**:
 
 ```bash
-# 1. Install dependencies
-make install
-
-# 2. Setup database
-make setup
-
-# 3. Run the app (opens in Chrome)
-make run
+sudo apt update
+sudo apt install git
 ```
 
-That's it! The app will open at `http://localhost:3000`
+### 1.2 Open a Terminal
+
+- **Windows**: Press Start → type **“PowerShell”** → open **Windows PowerShell**
+- **macOS**: Open **Terminal** from Applications → Utilities
+- **Linux**: Open your terminal emulator
+
+### 1.3 Clone the Repository
+
+In your terminal:
+
+```bash
+git clone https://github.com/jlautman1/blowjobs.ail.git
+cd blowjobs.ail
+```
+
+From now on, all commands assume your terminal is in this project folder.
 
 ---
 
-## 🔐 Demo Accounts
+## 2. Prerequisites (Required to Run the Code)
 
-Use these pre-seeded accounts to test the app:
+You’ll need these installed:
 
-| Account Type | Email | Password |
-|-------------|-------|----------|
-| **Job Seeker** | `jobseeker@demo.com` | `demo123` |
-| **Recruiter** | `recruiter@demo.com` | `demo123` |
-| **Second Job Seeker** | `developer@demo.com` | `demo123` |
+- **Go** (1.21+)
+- **PostgreSQL** 14+ (or Docker)
+- **Flutter** (with web and your platform enabled)
+- **Chrome** browser
 
-> **Note:** Run `npm run seed` after setting up the database to create these demo accounts.
+### 2.1 Check Go
 
----
-
-## 📋 Prerequisites
-
-Before running BlowJobs.ai, you need to install the following tools:
-
-### 1. Go (Backend)
-
-**Check if installed:**
 ```bash
 go version
 ```
-Expected output: `go version go1.21.x` or higher
 
-**Install Go:**
+If missing, install from `https://go.dev/dl`.
 
-| Platform | Installation |
-|----------|-------------|
-| **Windows** | Download from [go.dev/dl](https://go.dev/dl/) and run the installer |
-| **macOS** | `brew install go` or download from [go.dev/dl](https://go.dev/dl/) |
-| **Linux** | `sudo apt install golang-go` or `sudo snap install go --classic` |
+### 2.2 Check Flutter
 
-After installation, verify with `go version`
-
----
-
-### 2. Flutter (Frontend)
-
-**Check if installed:**
-```bash
-flutter doctor
-```
-Expected output: Shows Flutter version and checks for dependencies
-
-**Install Flutter:**
-
-| Platform | Installation |
-|----------|-------------|
-| **Windows** | 1. Download from [flutter.dev](https://docs.flutter.dev/get-started/install/windows)<br>2. Extract to `C:\flutter`<br>3. Add `C:\flutter\bin` to PATH |
-| **macOS** | `brew install flutter` or download from [flutter.dev](https://docs.flutter.dev/get-started/install/macos) |
-| **Linux** | `sudo snap install flutter --classic` or download from [flutter.dev](https://docs.flutter.dev/get-started/install/linux) |
-
-**After installation:**
 ```bash
 flutter doctor
 ```
 
-Fix any issues shown by `flutter doctor`. Common fixes:
-- Accept Android licenses: `flutter doctor --android-licenses`
-- Enable web: `flutter config --enable-web`
+If missing, install from `https://docs.flutter.dev/get-started/install`.
 
----
-
-### 3. PostgreSQL (Database)
-
-**Check if installed:**
-```bash
-psql --version
-```
-Expected output: `psql (PostgreSQL) 14.x` or higher
-
-**Option A: Install PostgreSQL directly**
-
-| Platform | Installation |
-|----------|-------------|
-| **Windows** | Download from [postgresql.org](https://www.postgresql.org/download/windows/) |
-| **macOS** | `brew install postgresql@15` then `brew services start postgresql@15` |
-| **Linux** | `sudo apt install postgresql postgresql-contrib` then `sudo systemctl start postgresql` |
-
-**Option B: Use Docker (Easier)**
-```bash
-docker-compose up -d postgres
-```
-This starts PostgreSQL automatically. No installation needed!
-
----
-
-### 4. Chrome Browser
-
-Required for web testing (the easiest way to test).
-
-**Check:** Just open Chrome. If you have it, you're good!
-
-**Install:** Download from [google.com/chrome](https://www.google.com/chrome/)
-
----
-
-### 5. Make (Build Tool)
-
-**Check if installed:**
-```bash
-make --version
-```
-
-**Install Make:**
-
-| Platform | Installation |
-|----------|-------------|
-| **Windows** | Install via [Chocolatey](https://chocolatey.org/): `choco install make`<br>Or use Git Bash (comes with make) |
-| **macOS** | `xcode-select --install` (comes with Xcode CLI tools) |
-| **Linux** | `sudo apt install build-essential` |
-
----
-
-### 6. Docker (Optional but Recommended)
-
-Makes database setup easier.
-
-**Check if installed:**
-```bash
-docker --version
-docker-compose --version
-```
-
-**Install Docker:**
-- Download [Docker Desktop](https://www.docker.com/products/docker-desktop/) for Windows/macOS
-- Linux: `sudo apt install docker.io docker-compose`
-
----
-
-## 🏃 Running the App
-
-### Using Make (Recommended)
+Make sure Flutter web is enabled:
 
 ```bash
-# First time only - install everything
-make setup
-
-# Start the app
-make run
+flutter config --enable-web
 ```
 
-### Using npm
+### 2.3 PostgreSQL (via Docker – recommended)
 
-```bash
-npm install
-npm run setup
-npm start
-```
+Install Docker Desktop:
 
-### Using Docker (Everything in containers)
+- `https://www.docker.com/products/docker-desktop`
 
-```bash
-docker-compose up -d
-```
-
-### Manual Start
-
-**Terminal 1 - Backend:**
-```bash
-cd backend
-go run cmd/server/main.go
-```
-
-**Terminal 2 - Frontend:**
-```bash
-cd frontend
-flutter run -d chrome --web-port=3000
-```
-
----
-
-## 🧪 Testing on Different Platforms
-
-### 📊 Platform Comparison
-
-| Platform | Difficulty | Setup Time | Best For |
-|----------|-----------|------------|----------|
-| **Web (Chrome)** | ⭐ Easiest | 0 min | Quick testing, development |
-| **Windows Desktop** | ⭐ Easy | 0 min | Windows users |
-| **Android Emulator** | ⭐⭐ Medium | 30 min | Android-specific testing |
-| **iOS Simulator** | ⭐⭐ Medium | 30 min | iOS-specific testing (macOS only) |
-| **Physical Android** | ⭐⭐ Medium | 10 min | Real device testing |
-| **Physical iPhone** | ⭐⭐⭐ Hard | 1+ hour | Real iOS testing (needs Apple Developer account) |
-
----
-
-### 🌐 Testing on Web (Chrome) - EASIEST
-
-**No emulator needed!** This is the fastest way to test.
-
-**Run:**
-```bash
-make frontend
-```
-
-Or manually:
-```bash
-cd frontend
-flutter run -d chrome --web-port=3000
-```
-
-**What happens:**
-- Chrome opens automatically
-- App runs at `http://localhost:3000`
-- Hot reload works (press `r` in terminal)
-
-**Limitations:**
-- Some mobile gestures work differently
-- No push notifications
-- No haptic feedback
-
----
-
-### 🖥️ Testing on Windows Desktop
-
-**Requirements:** Windows 10 or later
-
-**Enable Windows development:**
-```bash
-flutter config --enable-windows-desktop
-```
-
-**Run:**
-```bash
-cd frontend
-flutter run -d windows
-```
-
-**What happens:**
-- Native Windows app opens
-- Full desktop experience
-- Hot reload supported
-
----
-
-### 🤖 Testing on Android Emulator
-
-#### Step 1: Install Android Studio
-
-1. Download [Android Studio](https://developer.android.com/studio)
-2. Run the installer
-3. During setup, make sure to install:
-   - Android SDK
-   - Android SDK Platform-Tools
-   - Android Emulator
-
-#### Step 2: Create Virtual Device
-
-1. Open Android Studio
-2. Go to **Tools → Device Manager** (or AVD Manager)
-3. Click **Create Device**
-4. Choose a phone (e.g., Pixel 6)
-5. Select a system image (e.g., API 33 - Android 13)
-6. Click **Finish**
-
-#### Step 3: Start Emulator
-
-1. In Device Manager, click the **Play ▶️** button next to your device
-2. Wait for the emulator to boot up
-
-#### Step 4: Run the App
-
-```bash
-cd frontend
-flutter run -d android
-```
-
-Or with make:
-```bash
-make frontend-android
-```
-
-**Tips:**
-- First boot takes 2-5 minutes
-- Keep emulator running between tests
-- Use `flutter devices` to see available devices
-
----
-
-### 🍎 Testing on iOS Simulator (macOS Only)
-
-#### Step 1: Install Xcode
-
-1. Open App Store on your Mac
-2. Search for "Xcode"
-3. Install (it's ~12GB, takes a while)
-4. Open Xcode once to accept licenses
-
-#### Step 2: Install Command Line Tools
-
-```bash
-xcode-select --install
-sudo xcodebuild -license accept
-```
-
-#### Step 3: Install CocoaPods
-
-```bash
-sudo gem install cocoapods
-```
-
-Or with Homebrew:
-```bash
-brew install cocoapods
-```
-
-#### Step 4: Setup iOS Project
-
-```bash
-cd frontend/ios
-pod install
-cd ..
-```
-
-#### Step 5: Open Simulator
-
-```bash
-open -a Simulator
-```
-
-Or: Xcode → Open Developer Tool → Simulator
-
-#### Step 6: Run the App
-
-```bash
-flutter run -d ios
-```
-
-**Tips:**
-- Choose iPhone model: **File → Open Simulator → iOS X → iPhone 15**
-- Simulator is faster than Android emulator
-- Use `Cmd + Shift + H` for home button
-
----
-
-### 📱 Testing on Physical Android Phone
-
-#### Step 1: Enable Developer Mode on Phone
-
-1. Go to **Settings → About Phone**
-2. Tap **Build Number** 7 times
-3. You'll see "You are now a developer!"
-
-#### Step 2: Enable USB Debugging
-
-1. Go to **Settings → Developer Options**
-2. Enable **USB Debugging**
-3. (Optional) Enable **Install via USB**
-
-#### Step 3: Connect Phone
-
-1. Connect phone to computer with USB cable
-2. On phone, tap **Allow** when prompted for USB debugging
-
-#### Step 4: Verify Connection
-
-```bash
-flutter devices
-```
-
-You should see your phone listed.
-
-#### Step 5: Run the App
-
-```bash
-flutter run -d <device-id>
-```
-
-Or if only one device:
-```bash
-flutter run
-```
-
-**Tips:**
-- Use a good USB cable (data cable, not just charging)
-- Keep phone unlocked during installation
-- First install may ask for permission on phone
-
----
-
-### 📱 Testing on Physical iPhone
-
-**⚠️ This requires macOS and more setup than Android**
-
-#### Step 1: Prerequisites
-
-- macOS computer
-- Xcode installed
-- Apple ID (free)
-- iPhone connected via USB
-
-#### Step 2: Setup Signing
-
-1. Open `frontend/ios/Runner.xcworkspace` in Xcode
-2. Select **Runner** in the left panel
-3. Go to **Signing & Capabilities**
-4. Check **Automatically manage signing**
-5. Select your Team (your Apple ID)
-
-#### Step 3: Trust Developer on iPhone
-
-1. Connect iPhone to Mac
-2. On iPhone: **Settings → General → VPN & Device Management**
-3. Trust your developer certificate
-
-#### Step 4: Run
-
-```bash
-flutter run -d ios
-```
-
-**Tips:**
-- First run takes longer (builds native code)
-- Free Apple ID limits: app expires after 7 days
-- For App Store: need $99/year Apple Developer account
-
----
-
-### 📱 Testing on Your Phone via Network (Easiest for Any Phone!)
-
-**No cables, no emulators!** Access the web app directly from any phone on your local network.
-
-#### Step 1: Find Your Computer's IP Address
-
-**Windows:**
-```powershell
-ipconfig
-```
-Look for `IPv4 Address` under your WiFi adapter (e.g., `192.168.1.100`)
-
-**macOS/Linux:**
-```bash
-ifconfig | grep "inet "
-# or
-ip addr show | grep "inet "
-```
-
-#### Step 2: Start the Database
+Then, from the project root:
 
 ```bash
 docker-compose up -d postgres
 ```
 
-#### Step 3: Seed Demo Data
+This starts a Postgres database container named (by default) `blowjobs-db`.
+
+---
+
+## 3. How to Run the Code
+
+### 3.1 Backend Setup (API Server)
+
+In a terminal (project root):
 
 ```bash
 cd backend
+```
+
+### 3.1 Run Database Migrations
+
+```bash
+go run ./cmd/server  # first run will apply migrations, then fail if DB not ready
+```
+
+If the server starts successfully, stop it with:
+
+- **Windows**: press `Ctrl + C` in the PowerShell window
+- **macOS/Linux**: press `Ctrl + C`
+
+> If migrations already ran, you can skip re-running this step in the future.
+
+### 3.2 Seed Demo Data
+
+```bash
 go run ./cmd/seed
 ```
 
-#### Step 4: Start the Backend
+You should see logs about creating job seekers, recruiters, and jobs.
+
+### 3.3 Start the Backend Server
+
+From `backend/`:
 
 ```bash
-cd backend
 go run ./cmd/server
 ```
 
-#### Step 5: Build & Serve the Web App
+The API will listen on:
 
-Replace `YOUR_IP` with your actual IP address (e.g., `192.168.1.100`):
+- `http://localhost:8080`
+
+Keep this terminal window **running** while you test the app.
+
+---
+
+### 3.4 Run the Website on Your Computer (Chrome)
+
+Open **a new terminal** in the project root:
+
+```bash
+cd frontend
+flutter run -d chrome --web-port=3000 --dart-define=API_URL=http://localhost:8080/api/v1
+```
+
+What happens:
+
+- Chrome opens automatically
+- App runs at `http://localhost:3000`
+- Backend API is called at `http://localhost:8080/api/v1`
+
+You can now test the full flow directly in your browser.
+
+---
+
+## 4. Testing
+
+### 4.1 Test the Website on Your Phone (Same WiFi, No Cable)
+
+This lets **any phone** (Android or iPhone) open the web app over your local network, using the Flutter web build.
+
+### 5.1 Find Your Computer’s IP Address
+
+Run this in a terminal:
+
+- **Windows (PowerShell)**:
+
+```powershell
+ipconfig
+```
+
+Look for `IPv4 Address` under your Wi-Fi adapter, e.g. `192.168.7.3`.
+
+- **macOS/Linux** (one option):
+
+```bash
+ip addr show | grep "inet "
+```
+
+Pick the IP on your local network, e.g. `192.168.1.50`.
+
+We’ll call this IP: `YOUR_IP`.
+
+### 5.2 Start Backend (If Not Already Running)
+
+From `backend/`:
+
+```bash
+go run ./cmd/server
+```
+
+### 5.3 Run Flutter Web So Phones Can Reach It
+
+Open a **new terminal**, from the project root:
 
 ```bash
 cd frontend
 
-# Build with your IP address
-flutter build web --no-tree-shake-icons --dart-define=API_URL=http://YOUR_IP:8080/api/v1
-
-# Serve the app
-cd build/web
-python -m http.server 8081 --bind 0.0.0.0
+flutter run -d chrome \
+  --web-hostname=0.0.0.0 \
+  --web-port=8081 \
+  --dart-define=API_URL=http://YOUR_IP:8080/api/v1
 ```
 
-#### Step 6: Allow Firewall Access (Windows Only)
+- `0.0.0.0` makes the dev server accessible from other devices on your network.
+- Backend URL uses `YOUR_IP` so phones can reach it (they can’t see `localhost` on your computer).
+
+### 5.4 Allow Firewall (Windows Only, One-Time)
 
 Open **PowerShell as Administrator** and run:
 
@@ -516,180 +224,253 @@ netsh advfirewall firewall add rule name="BlowJobs Web" dir=in action=allow prot
 netsh advfirewall firewall add rule name="BlowJobs API" dir=in action=allow protocol=tcp localport=8080
 ```
 
-#### Step 7: Access from Your Phone
+### 5.5 Open on Your Phone
 
-1. Connect your phone to the **same WiFi network** as your computer
-2. Open your phone's browser (Safari, Chrome, etc.)
-3. Go to: `http://YOUR_IP:8081` (e.g., `http://192.168.1.100:8081`)
+1. Connect your phone to the **same WiFi** as your computer
+2. Open Safari/Chrome on the phone
+3. Visit:
 
-#### 🧪 Test Connectivity First
-
-Before loading the app, test the API:
+```text
+http://YOUR_IP:8081
 ```
+
+Example: `http://192.168.7.3:8081`
+
+### 5.6 Quick Connectivity Test (Optional)
+
+On the phone, test the backend health:
+
+```text
 http://YOUR_IP:8080/health
 ```
-You should see: `{"status":"ok"}`
 
-#### 📱 Add to Home Screen (Optional)
-
-**iPhone:** Tap Share → "Add to Home Screen"  
-**Android:** Tap Menu (⋮) → "Add to Home Screen"
-
-This gives you an app-like icon!
-
-#### 🔐 Demo Accounts for Testing
-
-| Type | Email | Password |
-|------|-------|----------|
-| Job Seeker | `jobseeker@demo.com` | `demo123` |
-| Recruiter | `recruiter@demo.com` | `demo123` |
-
-#### 🎯 Quick Match Test
-
-1. Login as `jobseeker@demo.com` → Swipe RIGHT on a TechCorp job
-2. Logout → Login as `recruiter@demo.com` → Swipe RIGHT on "Alex"
-3. 🎉 See the match celebration with confetti!
+If you see `{"status":"ok"}`, the phone can reach the API.
 
 ---
 
-## 🛠️ Available Make Commands
+### 4.2 Test on a Real Phone via USB Cable
 
-| Command | Description |
-|---------|-------------|
-| `make run` | Start backend + frontend (Chrome) |
-| `make setup` | First-time setup (install + database) |
-| `make install` | Install all dependencies |
-| `make backend` | Start only backend |
-| `make frontend` | Start frontend in Chrome |
-| `make frontend-android` | Start frontend on Android |
-| `make frontend-ios` | Start frontend on iOS |
-| `make frontend-windows` | Start frontend on Windows |
-| `make docker` | Start with Docker |
-| `make docker-stop` | Stop Docker services |
-| `make clean` | Clean build files |
-| `make help` | Show all commands |
+Here we run the **native Flutter app** on your phone.
 
----
+#### 4.2.1 Android Phone (Any OS)
 
-## ✨ Features
+##### Enable Developer Mode & USB Debugging
 
-### For Job Seekers
-- 🔄 **Swipe Interface** - Swipe right to apply, left to skip, up for super like
-- 📝 **Anonymous Profiles** - First name only, no photos required
-- 💬 **Real-time Chat** - Message recruiters instantly after matching
-- 📅 **Interview Scheduling** - Receive and manage interview invitations
-- 🏆 **Gamification** - Streaks, badges, achievements, and daily rewards
+On your Android phone:
 
-### For Recruiters
-- 📋 **Job Posting** - Create detailed job listings
-- 👥 **Candidate Discovery** - Browse anonymous but detailed profiles
-- 🎯 **Smart Matching** - Match with interested candidates
-- 💼 **Application Tracking** - Manage the entire hiring pipeline
+1. **Settings → About phone → Build number** → tap 7 times → “You are now a developer”
+2. **Settings → Developer options → USB debugging** → enable
 
-### Gamification Features
-- 🔥 **Daily Streaks** - Keep your activity streak going
-- 🏅 **14 Unique Badges** - First Match, Power Seeker, Streak Legend, etc.
-- 🎊 **Match Celebrations** - Confetti animations on matches
-- 📈 **XP & Levels** - Progress system with rewards
-- 🎁 **Daily Rewards** - Login bonuses that increase with streaks
+##### Connect the Phone
 
----
+- Plug phone into your computer with a USB cable
+- Accept any “Allow USB debugging” prompts on the phone
 
-## 🏗️ Tech Stack
+##### Verify Device
 
-| Component | Technology |
-|-----------|-----------|
-| **Backend** | Go, Gin, PostgreSQL, JWT, WebSockets |
-| **Frontend** | Flutter, Riverpod, go_router |
-| **Database** | PostgreSQL 15 |
-| **Containerization** | Docker, Docker Compose |
+From the project root:
 
----
-
-## 📁 Project Structure
-
-```
-get-higered/
-├── backend/                    # Go API Server
-│   ├── cmd/server/main.go     # Entry point
-│   ├── internal/
-│   │   ├── api/               # REST endpoints
-│   │   ├── auth/              # JWT & passwords
-│   │   ├── database/          # PostgreSQL
-│   │   ├── models/            # Data structures
-│   │   └── websocket/         # Real-time chat
-│   └── Dockerfile
-│
-├── frontend/                   # Flutter App
-│   ├── lib/
-│   │   ├── core/              # Theme, router, services
-│   │   └── features/          # Screens and widgets
-│   └── pubspec.yaml
-│
-├── docker-compose.yml
-├── Makefile
-├── package.json
-└── README.md
-```
-
----
-
-## 🔮 Roadmap
-
-### Phase 2 (Coming Soon)
-- [ ] Job board API integrations (Indeed, Adzuna)
-- [ ] Push notifications
-- [ ] Video interview integration
-- [ ] Resume parsing with AI
-
-### Phase 3
-- [ ] Contract management
-- [ ] Salary negotiation tools
-- [ ] Company reviews
-
----
-
-## 🐛 Troubleshooting
-
-### "flutter: command not found"
-Add Flutter to your PATH. See [Flutter installation](https://docs.flutter.dev/get-started/install).
-
-### "go: command not found"
-Add Go to your PATH. Restart terminal after installing.
-
-### Database connection error
-Make sure PostgreSQL is running:
 ```bash
-# Check if running
-pg_isready
-
-# Or use Docker
-docker-compose up -d postgres
+flutter devices
 ```
 
-### Android emulator not detected
+You should see your Android device listed.
+
+##### Run the App on Android
+
+Make sure the backend is running (`go run ./cmd/server`).
+
+Then from `frontend/`:
+
 ```bash
-flutter doctor --android-licenses
-flutter doctor
+cd frontend
+flutter run -d <device-id> --dart-define=API_URL=http://YOUR_IP:8080/api/v1
 ```
 
-### iOS build fails
+If only one Android device is connected, you can omit `-d <device-id>`:
+
+```bash
+flutter run --dart-define=API_URL=http://YOUR_IP:8080/api/v1
+```
+
+The app will install and run on your Android phone.
+
+---
+
+#### 4.2.2 iPhone (Requires macOS + Xcode)
+
+Apple only allows iOS apps to be built from macOS with Xcode.
+
+##### Requirements
+
+- A **Mac** with macOS
+- **Xcode** installed from the App Store
+- **Flutter** installed on the Mac
+- An **Apple ID**
+- Your iPhone + USB cable
+
+##### Set Up iOS Project
+
+On the Mac, in the project root:
+
 ```bash
 cd frontend/ios
-pod install --repo-update
+pod install
 cd ..
-flutter clean
-flutter run -d ios
+```
+
+##### Open in Xcode and Configure Signing
+
+1. Open `frontend/ios/Runner.xcworkspace` in **Xcode**
+2. Select the **Runner** target
+3. Go to **Signing & Capabilities**
+4. Check **“Automatically manage signing”**
+5. Choose your **Team** (your Apple ID)
+
+##### Connect iPhone and Trust Device
+
+1. Plug in your iPhone with USB
+2. On iPhone, tap **Trust This Computer**
+3. In **Settings → General → VPN & Device Management**, trust your developer profile if asked
+
+##### Run the App
+
+Make sure the backend is running and reachable at `http://YOUR_IP:8080`.
+
+From `frontend/` on the Mac:
+
+```bash
+cd frontend
+flutter run -d ios --dart-define=API_URL=http://YOUR_IP:8080/api/v1
+```
+
+The app will build and run on your iPhone.
+
+---
+
+### 4.3 Test on Android Emulator
+
+This is useful if you don’t have a physical Android device.
+
+#### Install Android Studio
+
+Download and install from:
+
+- `https://developer.android.com/studio`
+
+During setup, make sure you install:
+
+- Android SDK
+- Android SDK Platform-Tools
+- Android Emulator
+
+#### Create an Emulator (AVD)
+
+In Android Studio:
+
+1. **Tools → Device Manager**
+2. Click **Create Device**
+3. Choose a phone (e.g. Pixel 6)
+4. Choose a system image (e.g. Android 13, API 33)
+5. Finish
+
+#### Start the Emulator
+
+In Device Manager, click the **Play ▶️** button next to the virtual device.
+
+#### Run the App on the Emulator
+
+Make sure the backend is running (`go run ./cmd/server`).
+
+In a terminal from `frontend/`:
+
+```bash
+cd frontend
+flutter devices          # make sure the emulator appears
+flutter run -d <emulator-id> --dart-define=API_URL=http://YOUR_IP:8080/api/v1
+```
+
+If the emulator is the only Android device, you can often just run:
+
+```bash
+flutter run --dart-define=API_URL=http://YOUR_IP:8080/api/v1
 ```
 
 ---
 
-## 📄 License
+### 4.4 Test Profiles (Demo Accounts)
 
-MIT License - see [LICENSE](LICENSE) file.
+After running the seed script (`go run ./cmd/seed`), these demo profiles are created for testing:
+
+| Profile Type        | Name    | Email                       | Password  |
+|---------------------|---------|-----------------------------|-----------|
+| Job Seeker          | Alex    | `jobseeker@demo.com`        | `demo123` |
+| Job Seeker          | Sam     | `developer@demo.com`        | `demo123` |
+| Job Seeker          | Emma    | `emma.tech@demo.com`        | `demo123` |
+| Job Seeker          | Mike    | `mike.dev@demo.com`         | `demo123` |
+| Job Seeker          | Sarah   | `sarah.design@demo.com`     | `demo123` |
+| Job Seeker          | David   | `david.data@demo.com`       | `demo123` |
+| Job Seeker          | Lisa    | `lisa.marketing@demo.com`   | `demo123` |
+| Recruiter (TechCorp)| Jordan  | `recruiter@demo.com`        | `demo123` |
+| Recruiter (Startup) | Rachel  | `hr@startupxyz.com`         | `demo123` |
+| Recruiter (BigTech) | Marcus  | `talent@bigtech.com`        | `demo123` |
+
+> All other seeded demo users also use the password **`demo123`**.
+
+Typical end-to-end testing flow:
+
+- Login as **job seeker**, swipe right on a job
+- Login as **recruiter**, swipe right on that candidate
+- See the **match** and try the **chat**
 
 ---
 
-<p align="center">
-  Made with ❤️ for job seekers and recruiters everywhere
-</p>
+## 🧰 9. Optional: Makefile Shortcuts
+
+If you’re comfortable with **make**, there are helper commands defined in `Makefile` (may evolve over time):
+
+| Command            | What it Does                            |
+|--------------------|------------------------------------------|
+| `make setup`       | Install tools & set up DB (first time)  |
+| `make backend`     | Start only the backend API              |
+| `make frontend`    | Start frontend in Chrome (localhost)    |
+
+These are optional; all important flows are already described with raw commands above.
+
+---
+
+## 🐛 10. Troubleshooting (Common Issues)
+
+- **Port 8080 already in use**
+  - Another process is using the port. On Windows PowerShell:
+  ```powershell
+  netstat -ano | Select-String ":8080"
+  taskkill /F /PID <PID_FROM_ABOVE>
+  ```
+- **Phone cannot reach `http://YOUR_IP:8081`**
+  - Make sure phone and computer are on **same WiFi**
+  - Check Windows Firewall rules (see section 5.4)
+  - Verify backend health from phone: `http://YOUR_IP:8080/health`
+
+If you get stuck, the safest reset is:
+
+1. Stop all `go`, `flutter`, and `python` processes
+2. Restart Docker Desktop (for Postgres)
+3. Start backend again
+4. Start frontend again using the commands above
+
+---
+
+## 🏗️ 11. Tech Stack (High Level)
+
+| Layer        | Tech                         |
+|-------------|------------------------------|
+| Backend     | Go, Gin, PostgreSQL, JWT     |
+| Frontend    | Flutter (Web), Riverpod      |
+| Realtime    | WebSockets (chat, events)    |
+
+---
+
+Made for job seekers and recruiters who don’t want to blow the opportunity. 💼🔥
+
+

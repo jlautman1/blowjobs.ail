@@ -14,11 +14,12 @@ func (s *Server) GetConversations(c *gin.Context) {
 	userID := c.MustGet("user_id").(uuid.UUID)
 	userType := c.MustGet("user_type").(string)
 
+	// Fix: Count unread messages from the OTHER user only (not your own messages)
 	var query string
 	if userType == "job_seeker" {
 		query = `
 			SELECT m.id, u.first_name, j.title, j.company_name,
-			       m.unread_count, m.application_status, m.updated_at,
+			       COALESCE(unread.cnt, 0) as unread_count, m.application_status, m.updated_at,
 			       msg.content as last_message
 			FROM matches m
 			JOIN jobs j ON j.id = m.job_id
@@ -28,13 +29,17 @@ func (s *Server) GetConversations(c *gin.Context) {
 				WHERE match_id = m.id 
 				ORDER BY created_at DESC LIMIT 1
 			) msg ON true
+			LEFT JOIN LATERAL (
+				SELECT COUNT(*) as cnt FROM messages 
+				WHERE match_id = m.id AND sender_id != $1 AND is_read = false
+			) unread ON true
 			WHERE m.job_seeker_id = $1 AND m.status = 'matched'
 			ORDER BY COALESCE(m.last_message_at, m.matched_at) DESC
 		`
 	} else {
 		query = `
 			SELECT m.id, u.first_name, j.title, j.company_name,
-			       m.unread_count, m.application_status, m.updated_at,
+			       COALESCE(unread.cnt, 0) as unread_count, m.application_status, m.updated_at,
 			       msg.content as last_message
 			FROM matches m
 			JOIN jobs j ON j.id = m.job_id
@@ -44,6 +49,10 @@ func (s *Server) GetConversations(c *gin.Context) {
 				WHERE match_id = m.id 
 				ORDER BY created_at DESC LIMIT 1
 			) msg ON true
+			LEFT JOIN LATERAL (
+				SELECT COUNT(*) as cnt FROM messages 
+				WHERE match_id = m.id AND sender_id != $1 AND is_read = false
+			) unread ON true
 			WHERE m.recruiter_id = $1 AND m.status = 'matched'
 			ORDER BY COALESCE(m.last_message_at, m.matched_at) DESC
 		`
@@ -240,4 +249,3 @@ func (s *Server) MarkMessagesRead(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Messages marked as read"})
 }
-
