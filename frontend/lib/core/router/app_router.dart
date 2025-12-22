@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconsax/iconsax.dart';
 
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
@@ -11,6 +12,8 @@ import '../../features/swipe/presentation/screens/swipe_screen.dart';
 import '../../features/matches/presentation/screens/matches_screen.dart';
 import '../../features/chat/presentation/screens/chat_screen.dart';
 import '../../features/chat/presentation/screens/conversation_screen.dart';
+import '../../features/swipe/presentation/screens/swipe_history_screen.dart';
+import '../../core/theme/app_theme.dart';
 import '../providers/auth_provider.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -21,14 +24,21 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     debugLogDiagnostics: true,
     redirect: (context, state) {
       final isLoggedIn = authState.isAuthenticated;
+      final isLoading = authState.isLoading;
       final isLoggingIn = state.matchedLocation == '/login' ||
           state.matchedLocation == '/register' ||
           state.matchedLocation == '/';
+      
+      // Don't redirect while authentication is in progress
+      if (isLoading) {
+        return null;
+      }
       
       if (!isLoggedIn && !isLoggingIn) {
         return '/';
       }
       
+      // Only redirect to home if authenticated AND not currently on auth pages
       if (isLoggedIn && isLoggingIn) {
         return '/home';
       }
@@ -91,7 +101,69 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           return ConversationScreen(matchId: matchId);
         },
       ),
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const _PlaceholderScreen(title: 'My Profile', icon: Iconsax.user),
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const _PlaceholderScreen(title: 'Settings', icon: Iconsax.setting_2),
+      ),
+      GoRoute(
+        path: '/achievements',
+        builder: (context, state) => const _PlaceholderScreen(title: 'Achievements', icon: Iconsax.medal_star),
+      ),
+      GoRoute(
+        path: '/swipe-history',
+        builder: (context, state) => const SwipeHistoryScreen(),
+      ),
     ],
   );
 });
+
+// Placeholder screens for unimplemented features
+class _PlaceholderScreen extends StatelessWidget {
+  final String title;
+  final IconData icon;
+
+  const _PlaceholderScreen({required this.title, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        leading: IconButton(
+          icon: const Icon(Iconsax.arrow_left),
+          onPressed: () => context.pop(),
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 80,
+              color: AppColors.textTertiary,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Coming soon!',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 

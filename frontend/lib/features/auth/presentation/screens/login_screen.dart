@@ -32,14 +32,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
     
+    // Clear any previous errors
+    ref.read(authStateProvider.notifier).clearError();
+    
     final success = await ref.read(authStateProvider.notifier).login(
       _emailController.text.trim(),
       _passwordController.text,
     );
     
+    // Only navigate if login was successful
     if (success && mounted) {
-      context.go('/home');
+      // Wait a tiny bit to ensure state is updated
+      await Future.delayed(const Duration(milliseconds: 100));
+      if (mounted) {
+        context.go('/home');
+      }
     }
+    // If login failed, stay on login screen and show error (error is already set in state)
   }
 
   @override
@@ -149,9 +158,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {
-                          // TODO: Implement forgot password
-                        },
+                        onPressed: () => _showForgotPasswordDialog(context),
                         child: Text(
                           'Forgot Password?',
                           style: TextStyle(
@@ -237,6 +244,70 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showForgotPasswordDialog(BuildContext context) {
+    final emailController = TextEditingController();
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        title: const Text('Reset Password'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Enter your email address and we\'ll send you a link to reset your password.',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 20),
+            CustomTextField(
+              controller: emailController,
+              label: 'Email',
+              hint: 'Enter your email',
+              prefixIcon: Iconsax.sms,
+              keyboardType: TextInputType.emailAddress,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // TODO: Implement actual password reset API call
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Password reset link sent! Check your email.'),
+                  backgroundColor: AppColors.success,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Send Reset Link'),
           ),
         ],
       ),

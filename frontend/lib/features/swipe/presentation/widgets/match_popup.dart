@@ -19,7 +19,9 @@ class MatchPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).padding.bottom + 80; // Account for bottom nav
+    // Calculate safe bottom padding: system padding + bottom nav height (approx 100px)
+    final bottomNavHeight = 100.0;
+    final bottomPadding = MediaQuery.of(context).padding.bottom + bottomNavHeight;
     
     return Material(
       color: Colors.transparent,
@@ -39,9 +41,10 @@ class MatchPopup extends StatelessWidget {
           ),
           
           // Content
-          Center(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(32, 32, 32, bottomPadding),
+          SafeArea(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(32, 32, 32, bottomPadding),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -189,7 +192,7 @@ class MatchPopup extends StatelessWidget {
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

@@ -144,7 +144,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 }
 
 final storageServiceProvider = Provider<StorageService>((ref) => StorageService());
-final apiServiceProvider = Provider<ApiService>((ref) => ApiService());
+final apiServiceProvider = Provider<ApiService>((ref) => ApiService(ref));
 
 final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final apiService = ref.watch(apiServiceProvider);
