@@ -56,44 +56,152 @@ You’ll need these installed:
 
 - **Go** (1.21+)
 - **PostgreSQL** 14+ (or Docker)
-- **Flutter** (with web and your platform enabled)
+- **Flutter** (with web support enabled)
 - **Chrome** browser
 
-### 2.1 Check Go
+Below is **how to install each**, step by step.
+
+### 2.1 Go (Backend Runtime)
+
+#### 2.1.1 Check if Go is already installed
 
 ```bash
 go version
 ```
 
-If missing, install from `https://go.dev/dl`.
+If you see `go version go1.21.x ...`, you’re good.
 
-### 2.2 Check Flutter
+#### 2.1.2 Install Go
+
+- **Windows**
+  1. Go to `https://go.dev/dl`
+  2. Download the **Windows .msi installer**
+  3. Run it and accept the defaults
+  4. Close and reopen PowerShell, then run `go version` again
+
+- **macOS**
+  - With Homebrew (recommended):
+    ```bash
+    brew install go
+    go version
+    ```
+  - Or download the macOS installer from `https://go.dev/dl` and run it
+
+- **Linux (Debian/Ubuntu example)**
+  ```bash
+  sudo apt update
+  sudo apt install -y golang-go
+  go version
+  ```
+
+> If your distro’s Go version is too old, prefer the official tarball from `https://go.dev/dl`.
+
+---
+
+### 2.2 Flutter (Frontend)
+
+#### 2.2.1 Check if Flutter is installed
 
 ```bash
 flutter doctor
 ```
 
-If missing, install from `https://docs.flutter.dev/get-started/install`.
+If the command is not found, install Flutter.
 
-Make sure Flutter web is enabled:
+#### 2.2.2 Install Flutter
+
+- **Windows**
+  1. Go to `https://docs.flutter.dev/get-started/install/windows`
+  2. Download the Flutter SDK `.zip`
+  3. Extract to a folder, e.g. `C:\src\flutter`
+  4. Add `C:\src\flutter\bin` to your **PATH** (System Environment Variables)
+  5. Close and reopen PowerShell, then run:
+     ```bash
+     flutter doctor
+     ```
+
+- **macOS**
+  - With Homebrew:
+    ```bash
+    brew install --cask flutter
+    flutter doctor
+    ```
+  - Or follow `https://docs.flutter.dev/get-started/install/macos`
+
+- **Linux (snap example)**
+  ```bash
+  sudo snap install flutter --classic
+  flutter doctor
+  ```
+
+#### 2.2.3 Enable Web Support
+
+Web must be enabled to run the app in Chrome:
 
 ```bash
 flutter config --enable-web
+flutter doctor
 ```
 
-### 2.3 PostgreSQL (via Docker – recommended)
+Make sure Chrome is detected as a device.
 
-Install Docker Desktop:
+---
 
-- `https://www.docker.com/products/docker-desktop`
+### 2.3 PostgreSQL via Docker (Recommended)
 
-Then, from the project root:
+We use Docker so you don’t have to install PostgreSQL manually.
+
+#### 2.3.1 Install Docker
+
+- **Windows / macOS**
+  - Install **Docker Desktop** from:
+    - `https://www.docker.com/products/docker-desktop`
+  - After installation, start Docker Desktop and wait until it says **“Docker is running”**
+
+- **Linux (Debian/Ubuntu example)**
+  ```bash
+  sudo apt update
+  sudo apt install -y docker.io docker-compose
+  sudo systemctl enable --now docker
+  sudo usermod -aG docker $USER   # then log out and back in
+  docker --version
+  docker-compose --version
+  ```
+
+#### 2.3.2 Start PostgreSQL Container
+
+From the project root (`blowjobs.ail`):
 
 ```bash
 docker-compose up -d postgres
 ```
 
-This starts a Postgres database container named (by default) `blowjobs-db`.
+This will:
+
+- Download the `postgres:15-alpine` image (first time only)
+- Start a container called `blowjobs-db`
+
+To check it’s running:
+
+```bash
+docker ps
+```
+
+You should see a container with **postgres** in the image name.
+
+---
+
+### 2.4 Chrome Browser
+
+Flutter Web runs best in Chrome.
+
+- **Windows / macOS / Linux**
+  - Install from: `https://www.google.com/chrome/`
+  - After installing, restart your terminal and run:
+    ```bash
+    flutter doctor
+    ```
+    to confirm Flutter sees Chrome as a web device.
 
 ---
 
