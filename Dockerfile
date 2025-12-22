@@ -31,5 +31,6 @@ COPY --from=builder /app/server .
 EXPOSE 8080
 
 # Run the application
+# Railway will set PORT env var automatically
 CMD ["./server"]
 
