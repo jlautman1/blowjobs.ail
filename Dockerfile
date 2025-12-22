@@ -7,7 +7,7 @@ WORKDIR /app
 RUN apk add --no-cache git
 
 # Copy go mod files first (for better caching)
-COPY backend/go.mod backend/go.sum ./
+COPY backend/go.mod backend/go.sum* ./
 RUN go mod download
 
 # Copy the rest of the backend source
