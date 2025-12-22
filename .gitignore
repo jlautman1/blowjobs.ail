@@ -1,10 +1,37 @@
-# Backend
-backend/main
-backend/*.exe
-backend/.env
-*.log
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
 
-# Frontend - Flutter
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build outputs
+build/
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# Flutter/Dart
 frontend/.dart_tool/
 frontend/.packages
 frontend/.pub-cache/
@@ -14,32 +41,37 @@ frontend/.flutter-plugins
 frontend/.flutter-plugins-dependencies
 frontend/*.iml
 frontend/.metadata
+frontend/android/.gradle/
+frontend/android/local.properties
+frontend/android/app/debug/
+frontend/android/app/profile/
+frontend/android/app/release/
+frontend/ios/.symlinks/
+frontend/ios/Pods/
+frontend/ios/Flutter/Flutter.framework
+frontend/ios/Flutter/Flutter.podspec
+frontend/ios/Flutter/App.framework
+frontend/ios/Flutter/ephemeral/
+frontend/ios/Runner.xcworkspace/xcshareddata/
+frontend/ios/Runner.xcworkspace/xcuserdata/
+frontend/ios/Runner.xcodeproj/xcuserdata/
+frontend/ios/Runner.xcodeproj/project.xcworkspace/
+frontend/macos/Flutter/ephemeral/
+frontend/linux/flutter/ephemeral/
+frontend/windows/flutter/ephemeral/
+*.lock
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-.DS_Store
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Environment
-.env
-.env.local
-.env.*.local
-
-# Dependencies
-node_modules/
-vendor/
-
-# Build outputs
-dist/
-build/
-out/
+# Testing
+coverage/
 
 # Docker
-*.log
+postgres_data/
 
 # OS
 Thumbs.db
-.DS_Store
-

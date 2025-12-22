@@ -9,6 +9,7 @@
   <a href="#-prerequisites">Prerequisites</a> •
   <a href="#-running-the-app">Running</a> •
   <a href="#-testing-on-different-platforms">Testing</a> •
+  <a href="#-testing-on-your-phone-via-network-easiest-for-any-phone">📱 Phone Testing</a> •
   <a href="#-features">Features</a>
 </p>
 
@@ -449,6 +450,105 @@ flutter run -d ios
 - First run takes longer (builds native code)
 - Free Apple ID limits: app expires after 7 days
 - For App Store: need $99/year Apple Developer account
+
+---
+
+### 📱 Testing on Your Phone via Network (Easiest for Any Phone!)
+
+**No cables, no emulators!** Access the web app directly from any phone on your local network.
+
+#### Step 1: Find Your Computer's IP Address
+
+**Windows:**
+```powershell
+ipconfig
+```
+Look for `IPv4 Address` under your WiFi adapter (e.g., `192.168.1.100`)
+
+**macOS/Linux:**
+```bash
+ifconfig | grep "inet "
+# or
+ip addr show | grep "inet "
+```
+
+#### Step 2: Start the Database
+
+```bash
+docker-compose up -d postgres
+```
+
+#### Step 3: Seed Demo Data
+
+```bash
+cd backend
+go run ./cmd/seed
+```
+
+#### Step 4: Start the Backend
+
+```bash
+cd backend
+go run ./cmd/server
+```
+
+#### Step 5: Build & Serve the Web App
+
+Replace `YOUR_IP` with your actual IP address (e.g., `192.168.1.100`):
+
+```bash
+cd frontend
+
+# Build with your IP address
+flutter build web --no-tree-shake-icons --dart-define=API_URL=http://YOUR_IP:8080/api/v1
+
+# Serve the app
+cd build/web
+python -m http.server 8081 --bind 0.0.0.0
+```
+
+#### Step 6: Allow Firewall Access (Windows Only)
+
+Open **PowerShell as Administrator** and run:
+
+```powershell
+netsh advfirewall firewall add rule name="BlowJobs Web" dir=in action=allow protocol=tcp localport=8081
+netsh advfirewall firewall add rule name="BlowJobs API" dir=in action=allow protocol=tcp localport=8080
+```
+
+#### Step 7: Access from Your Phone
+
+1. Connect your phone to the **same WiFi network** as your computer
+2. Open your phone's browser (Safari, Chrome, etc.)
+3. Go to: `http://YOUR_IP:8081` (e.g., `http://192.168.1.100:8081`)
+
+#### 🧪 Test Connectivity First
+
+Before loading the app, test the API:
+```
+http://YOUR_IP:8080/health
+```
+You should see: `{"status":"ok"}`
+
+#### 📱 Add to Home Screen (Optional)
+
+**iPhone:** Tap Share → "Add to Home Screen"  
+**Android:** Tap Menu (⋮) → "Add to Home Screen"
+
+This gives you an app-like icon!
+
+#### 🔐 Demo Accounts for Testing
+
+| Type | Email | Password |
+|------|-------|----------|
+| Job Seeker | `jobseeker@demo.com` | `demo123` |
+| Recruiter | `recruiter@demo.com` | `demo123` |
+
+#### 🎯 Quick Match Test
+
+1. Login as `jobseeker@demo.com` → Swipe RIGHT on a TechCorp job
+2. Logout → Login as `recruiter@demo.com` → Swipe RIGHT on "Alex"
+3. 🎉 See the match celebration with confetti!
 
 ---
 
