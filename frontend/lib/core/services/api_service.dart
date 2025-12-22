@@ -1,0 +1,206 @@
+import 'package:dio/dio.dart';
+
+class ApiService {
+  late final Dio _dio;
+  String? _authToken;
+
+  // Change this to your backend URL
+  // For local development: http://localhost:8080/api/v1
+  // For Docker: http://localhost:8080/api/v1
+  static const String baseUrl = String.fromEnvironment(
+    'API_URL',
+    defaultValue: 'http://localhost:8080/api/v1',
+  );
+
+  ApiService() {
+    _dio = Dio(BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    ));
+
+    _dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        if (_authToken != null) {
+          options.headers['Authorization'] = 'Bearer $_authToken';
+        }
+        return handler.next(options);
+      },
+      onError: (error, handler) {
+        // Handle errors globally
+        return handler.next(error);
+      },
+    ));
+  }
+
+  void setAuthToken(String token) {
+    _authToken = token;
+  }
+
+  void clearAuthToken() {
+    _authToken = null;
+  }
+
+  // Auth endpoints
+  Future<Map<String, dynamic>> login(String email, String password) async {
+    try {
+      final response = await _dio.post('/auth/login', data: {
+        'email': email,
+        'password': password,
+      });
+      return response.data;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw Exception('Invalid email or password');
+      } else if (e.response?.statusCode == 404) {
+        throw Exception('User not found');
+      } else if (e.type == DioExceptionType.connectionTimeout) {
+        throw Exception('Connection timeout. Please try again.');
+      } else if (e.type == DioExceptionType.connectionError) {
+        throw Exception('Cannot connect to server. Is the backend running?');
+      }
+      throw Exception('Login failed. Please try again.');
+    }
+  }
+
+  Future<Map<String, dynamic>> register(
+    String email,
+    String password,
+    String firstName,
+    String userType,
+  ) async {
+    final response = await _dio.post('/auth/register', data: {
+      'email': email,
+      'password': password,
+      'first_name': firstName,
+      'user_type': userType,
+    });
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getCurrentUser() async {
+    final response = await _dio.get('/me');
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getUserStats() async {
+    final response = await _dio.get('/me/stats');
+    return response.data;
+  }
+
+  // Profile endpoints
+  Future<Map<String, dynamic>> getJobSeekerProfile() async {
+    final response = await _dio.get('/profiles/job-seeker');
+    return response.data;
+  }
+
+  Future<void> updateJobSeekerProfile(Map<String, dynamic> profile) async {
+    await _dio.put('/profiles/job-seeker', data: profile);
+  }
+
+  Future<Map<String, dynamic>> getRecruiterProfile() async {
+    final response = await _dio.get('/profiles/recruiter');
+    return response.data;
+  }
+
+  Future<void> updateRecruiterProfile(Map<String, dynamic> profile) async {
+    await _dio.put('/profiles/recruiter', data: profile);
+  }
+
+  // Job endpoints
+  Future<List<dynamic>> getJobFeed({int limit = 10}) async {
+    final response = await _dio.get('/jobs/feed', queryParameters: {'limit': limit});
+    return response.data;
+  }
+
+  Future<List<dynamic>> getCandidateFeed({int limit = 10}) async {
+    final response = await _dio.get('/candidates/feed', queryParameters: {'limit': limit});
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> createJob(Map<String, dynamic> job) async {
+    final response = await _dio.post('/jobs', data: job);
+    return response.data;
+  }
+
+  Future<List<dynamic>> getMyJobs() async {
+    final response = await _dio.get('/jobs/my-jobs');
+    return response.data;
+  }
+
+  // Swipe endpoints
+  Future<Map<String, dynamic>> recordSwipe(String targetId, String direction) async {
+    final response = await _dio.post('/swipes', data: {
+      'target_id': targetId,
+      'direction': direction,
+    });
+    return response.data;
+  }
+
+  // Match endpoints
+  Future<List<dynamic>> getMatches() async {
+    final response = await _dio.get('/matches');
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getMatch(String matchId) async {
+    final response = await _dio.get('/matches/$matchId');
+    return response.data;
+  }
+
+  // Chat endpoints
+  Future<List<dynamic>> getConversations() async {
+    final response = await _dio.get('/chat/conversations');
+    return response.data;
+  }
+
+  Future<List<dynamic>> getMessages(String matchId, {int limit = 50, int offset = 0}) async {
+    final response = await _dio.get('/chat/$matchId/messages', queryParameters: {
+      'limit': limit,
+      'offset': offset,
+    });
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> sendMessage(String matchId, String content) async {
+    final response = await _dio.post('/chat/$matchId/messages', data: {
+      'content': content,
+    });
+    return response.data;
+  }
+
+  Future<void> markMessagesRead(String matchId) async {
+    await _dio.put('/chat/$matchId/read');
+  }
+
+  // Interview endpoints
+  Future<List<dynamic>> getInterviews() async {
+    final response = await _dio.get('/interviews');
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> scheduleInterview(Map<String, dynamic> interview) async {
+    final response = await _dio.post('/interviews', data: interview);
+    return response.data;
+  }
+
+  // Gamification endpoints
+  Future<Map<String, dynamic>> getGamificationStats() async {
+    final response = await _dio.get('/gamification/stats');
+    return response.data;
+  }
+
+  Future<List<dynamic>> getBadges() async {
+    final response = await _dio.get('/gamification/badges');
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> claimDailyReward() async {
+    final response = await _dio.post('/gamification/daily-reward');
+    return response.data;
+  }
+}
+

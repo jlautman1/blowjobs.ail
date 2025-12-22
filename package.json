@@ -1,0 +1,24 @@
+{
+  "name": "blowjobs-ai",
+  "version": "1.0.0",
+  "description": "BlowJobs.ai - Don't blow this job opportunity! AI-powered job matching.",
+  "scripts": {
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend & go run cmd/server/main.go",
+    "frontend": "cd frontend & flutter run -d chrome --web-port=3000",
+    "frontend:web": "cd frontend & flutter run -d web-server --web-port=8081",
+    "install:all": "npm run install:backend & npm run install:frontend",
+    "install:backend": "cd backend & go mod tidy",
+    "install:frontend": "cd frontend & flutter pub get",
+    "setup": "npm run install:all",
+    "docker": "docker-compose up -d",
+    "docker:stop": "docker-compose down",
+    "clean": "cd frontend & flutter clean",
+    "seed": "cd backend & go run cmd/seed/main.go",
+    "db:setup": "docker-compose up -d postgres"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
+

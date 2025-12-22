@@ -1,0 +1,45 @@
+# Backend
+backend/main
+backend/*.exe
+backend/.env
+*.log
+
+# Frontend - Flutter
+frontend/.dart_tool/
+frontend/.packages
+frontend/.pub-cache/
+frontend/.pub/
+frontend/build/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/*.iml
+frontend/.metadata
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+out/
+
+# Docker
+*.log
+
+# OS
+Thumbs.db
+.DS_Store
+
