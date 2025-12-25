@@ -22,25 +22,25 @@ class JobCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isLiking 
-            ? AppColors.success.withOpacity(0.5)
+            ? AppColors.success.withOpacity(0.3)
             : isPassing 
-              ? AppColors.error.withOpacity(0.5)
-              : AppColors.surfaceBright,
-          width: 2,
+              ? AppColors.error.withOpacity(0.3)
+              : AppColors.surfaceBright.withOpacity(0.5),
+          width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(15),
         child: Stack(
           children: [
             // Main content - scrollable
@@ -53,20 +53,20 @@ class JobCard extends StatelessWidget {
                     // Header with company
                     Row(
                       children: [
-                        // Company logo
+                        // Company logo - More refined
                         Container(
                           width: 48,
                           height: 48,
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceLight,
-                            borderRadius: BorderRadius.circular(12),
+                            color: AppColors.primary.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Center(
                             child: Text(
                               (data['company_name'] ?? 'C')[0].toUpperCase(),
                               style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
                                 color: AppColors.primary,
                               ),
                             ),
@@ -140,29 +140,33 @@ class JobCard extends StatelessWidget {
                     
                     const SizedBox(height: 16),
                     
-                    // Salary
+                    // Salary - More refined
                     if (data['salary_range'] != null && data['salary_range'].toString().isNotEmpty)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: AppColors.success.withOpacity(0.1),
+                          color: AppColors.surfaceLight,
                           borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.surfaceBright,
+                            width: 1,
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Icon(
                               Iconsax.dollar_circle,
-                              size: 16,
-                              color: AppColors.success,
+                              size: 14,
+                              color: AppColors.textSecondary,
                             ),
                             const SizedBox(width: 6),
                             Text(
                               data['salary_range'].toString(),
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: 13,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.success,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                           ],
@@ -352,10 +356,14 @@ class _InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: AppColors.surfaceLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: AppColors.surfaceBright.withOpacity(0.5),
+          width: 1,
+        ),
       ),
       child: Text(
         text,
@@ -377,10 +385,14 @@ class _SkillChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.primary.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: AppColors.primary.withOpacity(0.2),
+          width: 1,
+        ),
       ),
       child: Text(
         text,

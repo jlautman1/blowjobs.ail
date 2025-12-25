@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
-  // Primary palette - Bright & Vibrant (per design spec)
-  static const Color primary = Color(0xFF0EA5E9);        // Primary CTA Blue
-  static const Color primaryLight = Color(0xFF38BDF8);   // Light Blue
-  static const Color primaryDark = Color(0xFF0284C7);    // Deep Blue
+  // Primary palette - Refined & Minimalist
+  static const Color primary = Color(0xFF2563EB);        // Refined Blue
+  static const Color primaryLight = Color(0xFF3B82F6);   // Light Blue
+  static const Color primaryDark = Color(0xFF1E40AF);   // Deep Blue
   
-  // Accent colors
-  static const Color accent = Color(0xFF06B6D4);         // Teal/Cyan
-  static const Color superLike = Color(0xFF8B5CF6);      // Purple for super likes
-  static const Color success = Color(0xFF22C55E);        // Like Green (bright)
-  static const Color error = Color(0xFFF87171);          // Soft Red (friendly)
+  // Accent colors - Simplified palette
+  static const Color accent = Color(0xFF2563EB);         // Same as primary for consistency
+  static const Color superLike = Color(0xFF7C3AED);       // Refined Purple
+  static const Color success = Color(0xFF10B981);       // Refined Green
+  static const Color error = Color(0xFFEF4444);           // Refined Red
   static const Color warning = Color(0xFFF59E0B);        // Amber
-  static const Color info = Color(0xFF3B82F6);           // Info Blue
+  static const Color info = Color(0xFF3B82F6);          // Info Blue
   
-  // Background colors - Clean, bright, airy
+  // Background colors - Clean, minimalist
   static const Color background = Color(0xFFFFFFFF);     // Pure white
-  static const Color surface = Color(0xFFFFFFFF);        // Pure white
-  static const Color surfaceLight = Color(0xFFF8FAFC);   // Secondary background
-  static const Color surfaceBright = Color(0xFFE2E8F0);  // Divider gray
+  static const Color surface = Color(0xFFFFFFFF);       // Pure white
+  static const Color surfaceLight = Color(0xFFF9FAFB);  // Very subtle gray
+  static const Color surfaceBright = Color(0xFFE5E7EB);   // Subtle divider
   
   // Card background
   static const Color cardBackground = Color(0xFFFFFFFF);
@@ -55,10 +55,10 @@ class AppColors {
     end: Alignment.bottomCenter,
   );
   
-  // Swipe colors (per design spec)
-  static const Color swipeRight = Color(0xFF22C55E);     // Like - Green
-  static const Color swipeLeft = Color(0xFFF87171);      // Skip - Soft Red
-  static const Color swipeUp = Color(0xFF8B5CF6);        // Super Like - Purple
+  // Swipe colors - Refined
+  static const Color swipeRight = Color(0xFF10B981);    // Like - Refined Green
+  static const Color swipeLeft = Color(0xFFEF4444);      // Skip - Refined Red
+  static const Color swipeUp = Color(0xFF7C3AED);        // Super Like - Refined Purple
 }
 
 class AppTheme {
@@ -171,14 +171,14 @@ class AppTheme {
         ),
       ),
       
-      // Card theme
+      // Card theme - Premium look
       cardTheme: CardThemeData(
         color: AppColors.surface,
-        elevation: 4,
-        shadowColor: AppColors.primary.withOpacity(0.1),
+        elevation: 2,
+        shadowColor: Colors.black.withOpacity(0.05),
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
         ),
       ),
       
