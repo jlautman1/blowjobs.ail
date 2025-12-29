@@ -20,10 +20,6 @@ class MatchPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate safe bottom padding: system padding + bottom nav height (approx 100px)
-    final bottomNavHeight = 100.0;
-    final bottomPadding = MediaQuery.of(context).padding.bottom + bottomNavHeight;
-    
     return Material(
       color: Colors.transparent,
       child: Stack(
@@ -41,14 +37,15 @@ class MatchPopup extends StatelessWidget {
             ),
           ),
           
-          // Content
+          // Content - Make it scrollable to ensure buttons are always visible
           SafeArea(
             child: Center(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(32, 32, 32, bottomPadding),
-                child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                   // "It's a Match!" header
                   ShaderMask(
                     shaderCallback: (bounds) => AppColors.primaryGradient.createShader(bounds),
@@ -65,7 +62,7 @@ class MatchPopup extends StatelessWidget {
                     .fadeIn(duration: 500.ms)
                     .scale(begin: const Offset(0.5, 0.5), end: const Offset(1, 1)),
                   
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   
                   // Different content for recruiters vs job seekers
                   if (isRecruiter) ...[
@@ -89,33 +86,34 @@ class MatchPopup extends StatelessWidget {
                     ).animate()
                       .fadeIn(duration: 500.ms, delay: 300.ms),
                   ] else ...[
-                    // For job seekers: show job title and company
+                    // For job seekers: show job title and company (more compact)
                     Text(
                       match['job']?['title'] ?? 'New Opportunity',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w700,
                       ),
                     ).animate()
                       .fadeIn(duration: 500.ms, delay: 200.ms),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Text(
                       'at ${match['company_name'] ?? 'Company'}',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         color: AppColors.textSecondary,
                       ),
                     ).animate()
                       .fadeIn(duration: 500.ms, delay: 300.ms),
                   ],
                   
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 24),
                   
-                  // Match illustration
+                  // Match illustration - smaller for job seekers
                   Container(
-                    width: 160,
-                    height: 160,
+                    width: isRecruiter ? 160 : 120,
+                    height: isRecruiter ? 160 : 120,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: AppColors.matchGradient,
@@ -127,10 +125,10 @@ class MatchPopup extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Icon(
                         Iconsax.heart5,
-                        size: 80,
+                        size: isRecruiter ? 80 : 60,
                         color: Colors.white,
                       ),
                     ),
@@ -143,23 +141,23 @@ class MatchPopup extends StatelessWidget {
                       duration: 800.ms,
                     ),
                   
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 24),
                   
-                  // Message - different for recruiters vs job seekers
+                  // Message - different for recruiters vs job seekers (more compact for job seekers)
                   Text(
                     isRecruiter
                       ? 'This candidate is interested in your role!\nStart a conversation to learn more about them.'
-                      : 'This company is interested in your profile!\nStart a conversation to learn more about the role.',
+                      : 'This company is interested in your profile!\nStart a conversation to learn more.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: isRecruiter ? 15 : 14,
                       color: AppColors.textSecondary,
                       height: 1.5,
                     ),
                   ).animate()
                     .fadeIn(duration: 500.ms, delay: 400.ms),
                   
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 24),
                   
                   // Action buttons
                   Row(
@@ -214,10 +212,12 @@ class MatchPopup extends StatelessWidget {
                   ).animate()
                     .fadeIn(duration: 500.ms, delay: 500.ms)
                     .slideY(begin: 0.2),
-                ],
+                    // Add bottom padding to ensure buttons are visible
+                    SizedBox(height: MediaQuery.of(context).padding.bottom + 20),
+                  ],
+                ),
               ),
             ),
-          ),
           ),
         ],
       ),
