@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/environment_provider.dart';
@@ -205,6 +207,23 @@ class ApiService {
 
   Future<Map<String, dynamic>> claimDailyReward() async {
     final response = await _dio.post('/gamification/daily-reward');
+    return response.data;
+  }
+
+  // CV Upload endpoint
+  Future<Map<String, dynamic>> uploadCV(Uint8List fileBytes, String fileName) async {
+    final formData = FormData.fromMap({
+      'cv': MultipartFile.fromBytes(
+        fileBytes,
+        filename: fileName,
+      ),
+    });
+    
+    // Don't set Content-Type header - Dio will set it automatically with boundary
+    final response = await _dio.post(
+      '/profiles/job-seeker/cv',
+      data: formData,
+    );
     return response.data;
   }
 }

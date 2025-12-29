@@ -42,14 +42,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final authState = ref.watch(authStateProvider);
     
     return Scaffold(
-      body: Column(
-        children: [
-          // Custom app bar
-          _buildAppBar(context, authState),
-          
-          // Content
-          Expanded(child: widget.child),
-        ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Custom app bar
+            _buildAppBar(context, authState),
+            
+            // Content - properly constrained
+            Expanded(
+              child: ClipRect(
+                child: widget.child,
+              ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: _buildBottomNav(authState),
     );
@@ -65,29 +71,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.surfaceBright.withOpacity(0.5),
+            width: 1,
           ),
-        ],
+        ),
       ),
       child: Row(
         children: [
-          // Logo
+          // Logo - Vibrant gradient
           Container(
-            width: 40,
-            height: 40,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: const Center(
               child: Text(
                 '🚀',
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 24,
                 ),
               ),
             ),
@@ -103,9 +115,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Text(
                   'Hi, ${authState.firstName}! 👋',
                   style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
+                    letterSpacing: -0.3,
                   ),
                 ),
                 Row(
@@ -162,11 +175,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               height: 40,
               decoration: BoxDecoration(
                 color: AppColors.surfaceLight,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.primary.withOpacity(0.3),
-                  width: 2,
-                ),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
                 child: Text(
@@ -188,34 +197,66 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _showProfileMenu(BuildContext context) {
+    final authState = ref.read(authStateProvider);
+    
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       backgroundColor: AppColors.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.4,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) => ListView(
+          controller: scrollController,
+          padding: EdgeInsets.only(
+            top: 24,
+            left: 24,
+            right: 24,
+            bottom: MediaQuery.of(context).padding.bottom + 24,
+          ),
           children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.surfaceBright,
-                borderRadius: BorderRadius.circular(2),
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceBright,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
             const SizedBox(height: 24),
             _ProfileMenuItem(
-              icon: Iconsax.user,
-              title: 'My Profile',
-              onTap: () {
-                Navigator.pop(context);
-                context.push('/profile');
-              },
-            ),
+                  icon: Iconsax.user,
+                  title: 'My Profile',
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.push('/profile');
+                  },
+                ),
+                if (authState.userType == 'job_seeker')
+                  _ProfileMenuItem(
+                    icon: Iconsax.document_upload,
+                    title: 'Upload CV',
+                    onTap: () {
+                      Navigator.pop(context);
+                      context.push('/cv-upload');
+                    },
+                  ),
+                if (authState.userType == 'recruiter')
+                  _ProfileMenuItem(
+                    icon: Iconsax.chart,
+                    title: 'Dashboard',
+                    onTap: () {
+                      Navigator.pop(context);
+                      context.push('/recruiter-dashboard');
+                    },
+                  ),
             _ProfileMenuItem(
               icon: Iconsax.setting_2,
               title: 'Settings',
@@ -251,7 +292,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 context.go('/');
               },
             ),
-            SizedBox(height: MediaQuery.of(context).padding.bottom),
           ],
         ),
       ),
@@ -265,13 +305,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+        border: Border(
+          top: BorderSide(
+            color: AppColors.surfaceBright.withOpacity(0.5),
+            width: 1,
           ),
-        ],
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

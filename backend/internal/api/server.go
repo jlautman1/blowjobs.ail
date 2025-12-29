@@ -81,6 +81,7 @@ func (s *Server) setupRouter() {
 			{
 				profiles.GET("/job-seeker", s.GetJobSeekerProfile)
 				profiles.PUT("/job-seeker", s.UpdateJobSeekerProfile)
+				profiles.POST("/job-seeker/cv", s.UploadCV)
 				profiles.GET("/recruiter", s.GetRecruiterProfile)
 				profiles.PUT("/recruiter", s.UpdateRecruiterProfile)
 			}
