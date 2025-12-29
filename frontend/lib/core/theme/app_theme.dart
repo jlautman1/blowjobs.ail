@@ -2,24 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
-  // Primary palette - Refined & Minimalist
-  static const Color primary = Color(0xFF2563EB);        // Refined Blue
-  static const Color primaryLight = Color(0xFF3B82F6);   // Light Blue
-  static const Color primaryDark = Color(0xFF1E40AF);   // Deep Blue
+  // Primary palette - EXTRA Bright & Vibrant (Maximum Dopamine!)
+  static const Color primary = Color(0xFF00D4FF);        // Electric Cyan - Maximum Energy
+  static const Color primaryLight = Color(0xFF00F5FF);   // Bright Cyan - Ultra Friendly
+  static const Color primaryDark = Color(0xFF0099CC);   // Deep Cyan
   
-  // Accent colors - Simplified palette
-  static const Color accent = Color(0xFF2563EB);         // Same as primary for consistency
-  static const Color superLike = Color(0xFF7C3AED);       // Refined Purple
-  static const Color success = Color(0xFF10B981);       // Refined Green
-  static const Color error = Color(0xFFEF4444);           // Refined Red
-  static const Color warning = Color(0xFFF59E0B);        // Amber
-  static const Color info = Color(0xFF3B82F6);          // Info Blue
+  // Accent colors - Ultra Vibrant & Exciting
+  static const Color accent = Color(0xFF00E5FF);         // Electric Teal
+  static const Color superLike = Color(0xFFB24BF3);       // Electric Purple - Ultra Exciting
+  static const Color success = Color(0xFF00FF88);       // Electric Green - Maximum Energy
+  static const Color error = Color(0xFFFF6B6B);           // Vibrant Red
+  static const Color warning = Color(0xFFFFB800);        // Electric Amber
+  static const Color info = Color(0xFF00D4FF);          // Info Cyan
   
-  // Background colors - Clean, minimalist
+  // Additional vibrant colors for more color variety
+  static const Color vibrantOrange = Color(0xFFFF6B35);
+  static const Color vibrantPink = Color(0xFFFF3B9D);
+  static const Color vibrantYellow = Color(0xFFFFD93D);
+  
+  // Background colors - Clean & Airy
   static const Color background = Color(0xFFFFFFFF);     // Pure white
   static const Color surface = Color(0xFFFFFFFF);       // Pure white
-  static const Color surfaceLight = Color(0xFFF9FAFB);  // Very subtle gray
-  static const Color surfaceBright = Color(0xFFE5E7EB);   // Subtle divider
+  static const Color surfaceLight = Color(0xFFF8FAFC);  // Very light gray - Airy
+  static const Color surfaceBright = Color(0xFFE2E8F0);   // Light divider
   
   // Card background
   static const Color cardBackground = Color(0xFFFFFFFF);
@@ -29,36 +34,63 @@ class AppColors {
   static const Color textSecondary = Color(0xFF475569);  // Secondary text
   static const Color textTertiary = Color(0xFF94A3B8);   // Muted text
   
-  // Gradient colors
+  // Gradient colors - ULTRA Vibrant & Energetic (Maximum Dopamine!)
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF0EA5E9), Color(0xFF06B6D4)],
+    colors: [Color(0xFF00D4FF), Color(0xFF00F5FF), Color(0xFF00E5FF)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
   
+  // Card gradient - Vibrant with color
   static const LinearGradient cardGradient = LinearGradient(
-    colors: [Color(0xFFFFFFFF), Color(0xFFF8FAFC)],
+    colors: [Color(0xFFFFFFFF), Color(0xFFF0F9FF), Color(0xFFE0F2FE)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
+  );
+  
+  // Vibrant card gradient with cyan tint
+  static const LinearGradient vibrantCardGradient = LinearGradient(
+    colors: [Color(0xFFFFFFFF), Color(0xFFE0F7FA), Color(0xFFB2EBF2)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
   );
   
   static const LinearGradient matchGradient = LinearGradient(
-    colors: [Color(0xFF22C55E), Color(0xFF0EA5E9)],
+    colors: [Color(0xFF00FF88), Color(0xFF00D4FF), Color(0xFFB24BF3)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
   
-  // Background gradient for screens (subtle, airy)
+  // Background gradient - More alive with subtle color
   static const LinearGradient backgroundGradient = LinearGradient(
-    colors: [Color(0xFFFFFFFF), Color(0xFFF8FAFC)],
+    colors: [Color(0xFFFFFFFF), Color(0xFFF0F9FF), Color(0xFFE0F2FE)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
   
-  // Swipe colors - Refined
-  static const Color swipeRight = Color(0xFF10B981);    // Like - Refined Green
-  static const Color swipeLeft = Color(0xFFEF4444);      // Skip - Refined Red
-  static const Color swipeUp = Color(0xFF7C3AED);        // Super Like - Refined Purple
+  // Swipe gradients - Ultra vibrant
+  static const LinearGradient swipeRightGradient = LinearGradient(
+    colors: [Color(0xFF00FF88), Color(0xFF00E676)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+  
+  static const LinearGradient swipeLeftGradient = LinearGradient(
+    colors: [Color(0xFFFF6B6B), Color(0xFFFF5252)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+  
+  static const LinearGradient swipeUpGradient = LinearGradient(
+    colors: [Color(0xFFB24BF3), Color(0xFF9C27B0)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+  
+  // Swipe colors - ULTRA Bright & Vibrant (Maximum Dopamine!)
+  static const Color swipeRight = Color(0xFF00FF88);    // Like - Electric Green
+  static const Color swipeLeft = Color(0xFFFF6B6B);      // Skip - Vibrant Red
+  static const Color swipeUp = Color(0xFFB24BF3);        // Super Like - Electric Purple
 }
 
 class AppTheme {
@@ -83,76 +115,92 @@ class AppTheme {
         onError: Colors.white,
       ),
       
-      // Text theme - Using Inter for clean, modern look
+      // Text theme - Using Inter for clean, modern look with generous spacing
       textTheme: GoogleFonts.interTextTheme(
         const TextTheme(
           displayLarge: TextStyle(
-            fontSize: 48,
-            fontWeight: FontWeight.bold,
+            fontSize: 64,
+            fontWeight: FontWeight.w900,
             color: AppColors.textPrimary,
-            letterSpacing: -1,
+            letterSpacing: -2,
+            height: 1.1,
           ),
           displayMedium: TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
+            fontSize: 48,
+            fontWeight: FontWeight.w900,
             color: AppColors.textPrimary,
-            letterSpacing: -0.5,
+            letterSpacing: -1.5,
+            height: 1.1,
           ),
           displaySmall: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w600,
+            fontSize: 36,
+            fontWeight: FontWeight.w800,
             color: AppColors.textPrimary,
+            letterSpacing: -1,
+            height: 1.2,
           ),
           headlineLarge: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
+            fontSize: 32,
+            fontWeight: FontWeight.w800,
             color: AppColors.textPrimary,
+            letterSpacing: -0.5,
+            height: 1.2,
           ),
           headlineMedium: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+            fontSize: 28,
+            fontWeight: FontWeight.w800,
             color: AppColors.textPrimary,
+            letterSpacing: -0.5,
+            height: 1.2,
           ),
           headlineSmall: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
             color: AppColors.textPrimary,
+            height: 1.3,
           ),
           titleLarge: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+            height: 1.4,
+          ),
+          titleMedium: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
-          ),
-          titleMedium: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary,
+            height: 1.4,
           ),
           titleSmall: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
             color: AppColors.textSecondary,
+            height: 1.4,
           ),
           bodyLarge: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.normal,
             color: AppColors.textPrimary,
+            height: 1.6,
           ),
           bodyMedium: TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.normal,
             color: AppColors.textSecondary,
+            height: 1.6,
           ),
           bodySmall: TextStyle(
-            fontSize: 12,
+            fontSize: 13,
             fontWeight: FontWeight.normal,
             color: AppColors.textTertiary,
+            height: 1.5,
           ),
           labelLarge: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
             color: AppColors.textPrimary,
-            letterSpacing: 0.5,
+            letterSpacing: 0.3,
+            height: 1.4,
           ),
         ),
       ),
@@ -171,80 +219,82 @@ class AppTheme {
         ),
       ),
       
-      // Card theme - Premium look
+      // Card theme - Premium look with vibrant shadows
       cardTheme: CardThemeData(
         color: AppColors.surface,
-        elevation: 2,
-        shadowColor: Colors.black.withOpacity(0.05),
+        elevation: 0,
+        shadowColor: AppColors.primary.withOpacity(0.1),
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
         ),
       ),
       
-      // Elevated button theme
+      // Elevated button theme - Vibrant, prominent
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
-          elevation: 2,
-          shadowColor: AppColors.primary.withOpacity(0.3),
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          elevation: 4,
+          shadowColor: AppColors.primary.withOpacity(0.4),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
           textStyle: const TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.3,
           ),
         ),
       ),
       
-      // Outlined button theme
+      // Outlined button theme - Vibrant borders
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
-          side: const BorderSide(color: AppColors.primary, width: 2),
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          side: const BorderSide(color: AppColors.primary, width: 2.5),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
           textStyle: const TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.3,
           ),
         ),
       ),
       
-      // Input decoration theme
+      // Input decoration theme - Rounded, friendly
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surfaceLight,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: AppColors.surfaceBright, width: 1),
+          borderSide: BorderSide(color: AppColors.surfaceBright, width: 1.5),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: AppColors.surfaceBright, width: 1),
+          borderSide: BorderSide(color: AppColors.surfaceBright, width: 1.5),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          borderSide: const BorderSide(color: AppColors.primary, width: 2.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.error, width: 2),
+          borderSide: const BorderSide(color: AppColors.error, width: 2.5),
         ),
         hintStyle: const TextStyle(
           color: AppColors.textTertiary,
           fontSize: 16,
+          fontWeight: FontWeight.normal,
         ),
         labelStyle: const TextStyle(
           color: AppColors.textSecondary,
+          fontWeight: FontWeight.w600,
         ),
       ),
       

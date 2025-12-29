@@ -112,9 +112,19 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
     
     return Stack(
       children: [
-        // Background - clean light theme
+        // Background - Vibrant gradient for more alive feel
         Container(
-          color: AppColors.background,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFFFFFFFF),
+                Color(0xFFF0F9FF),
+                Color(0xFFE0F2FE),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
         ),
         
         // Main content
@@ -199,7 +209,16 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
 
   Widget _buildStatsRow(SwipeFeedState swipeState) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      decoration: BoxDecoration(
+        gradient: AppColors.cardGradient,
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.surfaceBright.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -210,8 +229,8 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
           ),
           Container(
             width: 1,
-            height: 30,
-            color: AppColors.surfaceBright,
+            height: 24,
+            color: AppColors.surfaceBright.withOpacity(0.5),
           ),
           _StatItem(
             icon: Iconsax.heart,
@@ -221,8 +240,8 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
           ),
           Container(
             width: 1,
-            height: 30,
-            color: AppColors.surfaceBright,
+            height: 24,
+            color: AppColors.surfaceBright.withOpacity(0.5),
           ),
           _StatItem(
             icon: Iconsax.magic_star,
@@ -268,54 +287,67 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
   }
 
   Widget _buildEmptyState(bool isRecruiter) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(32),
-              ),
-              child: const Center(
-                child: Icon(
-                  Iconsax.search_status,
-                  size: 56,
-                  color: AppColors.textTertiary,
+    return SingleChildScrollView(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  gradient: AppColors.cardGradient,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.1),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Icon(
+                    Iconsax.search_status,
+                    size: 48,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 32),
-            Text(
-              isRecruiter 
-                ? 'No more candidates'
-                : 'No more jobs',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              isRecruiter
-                ? 'Check back later for new talent!'
-                : 'Check back later for new opportunities!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 16,
+              const SizedBox(height: 24),
+              Text(
+                isRecruiter 
+                  ? 'No more candidates'
+                  : 'No more jobs',
+                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.center,
               ),
-            ),
-            const SizedBox(height: 32),
-            TextButton.icon(
-              onPressed: () {
-                ref.read(swipeFeedProvider.notifier).loadFeed();
-              },
-              icon: const Icon(Iconsax.refresh),
-              label: const Text('Refresh'),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Text(
+                isRecruiter
+                  ? 'Check back later for new talent!'
+                  : 'Check back later for new opportunities!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 15,
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
+                onPressed: () {
+                  ref.read(swipeFeedProvider.notifier).loadFeed();
+                },
+                icon: const Icon(Iconsax.refresh, size: 18),
+                label: const Text('Refresh'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -596,32 +628,44 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayColor = valueColor ?? AppColors.primary;
+    
     return Column(
       children: [
-        Row(
-          children: [
-            Icon(
-              icon,
-              size: 16,
-              color: valueColor ?? AppColors.textSecondary,
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                displayColor.withOpacity(0.15),
+                displayColor.withOpacity(0.08),
+              ],
             ),
-            const SizedBox(width: 6),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: valueColor ?? AppColors.textPrimary,
-              ),
-            ),
-          ],
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            icon,
+            size: 20,
+            color: displayColor,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w800,
+            color: displayColor,
+            letterSpacing: -0.5,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           label,
           style: const TextStyle(
-            fontSize: 11,
-            color: AppColors.textTertiary,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textSecondary,
           ),
         ),
       ],
