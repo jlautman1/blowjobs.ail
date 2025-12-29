@@ -1,0 +1,8 @@
+[build]
+  base = "frontend"
+  command = "flutter build web --release --no-tree-shake-icons --dart-define=API_URL=https://blowjobs-backend-production.up.railway.app/api/v1"
+  publish = "build/web"
+
+[build.environment]
+  FLUTTER_VERSION = "3.24.0"
+
