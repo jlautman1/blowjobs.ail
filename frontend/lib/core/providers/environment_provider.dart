@@ -24,11 +24,31 @@ class EnvironmentNotifier extends StateNotifier<Environment> {
   }
   
   static Environment _determineInitialEnvironment() {
-    // Default to development (can be changed by user)
+    // If API_URL is set from build (deployed web), default to production
+    final buildApiUrl = apiUrlFromBuild;
+    if (buildApiUrl != null && buildApiUrl.isNotEmpty && kIsWeb) {
+      return Environment.production;
+    }
+    // Otherwise default to development (local development)
     return Environment.development;
   }
 
   Future<void> _loadEnvironment() async {
+    // If API_URL is set from build (deployed web), use production
+    final buildApiUrl = apiUrlFromBuild;
+    if (buildApiUrl != null && buildApiUrl.isNotEmpty && kIsWeb) {
+      state = Environment.production;
+      // Save this preference
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt(_storageKey, Environment.production.index);
+      } catch (e) {
+        // Ignore storage errors
+      }
+      return;
+    }
+    
+    // Otherwise load from storage
     try {
       final prefs = await SharedPreferences.getInstance();
       final envIndex = prefs.getInt(_storageKey);
@@ -36,7 +56,7 @@ class EnvironmentNotifier extends StateNotifier<Environment> {
         state = Environment.values[envIndex];
       }
     } catch (e) {
-      // Keep default (development)
+      // Keep default
     }
   }
 
