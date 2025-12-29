@@ -50,11 +50,19 @@ class EnvironmentNotifier extends StateNotifier<Environment> {
     }
   }
 
+  // Check if API URL is locked from build (deployed web app)
+  bool get isApiUrlLocked {
+    final buildApiUrl = apiUrlFromBuild;
+    return buildApiUrl != null && buildApiUrl.isNotEmpty;
+  }
+
   String get apiUrl {
     // First check if API_URL was set from build (dart-define)
     // This allows Netlify build to set the production URL
     final buildApiUrl = apiUrlFromBuild;
     if (buildApiUrl != null && buildApiUrl.isNotEmpty) {
+      // If build URL is set, always use it (production deployment)
+      // Environment switching won't affect the actual API URL on deployed web
       return buildApiUrl;
     }
     
