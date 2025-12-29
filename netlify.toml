@@ -1,6 +1,6 @@
 [build]
   base = "frontend"
-  command = "flutter build web --release --no-tree-shake-icons --dart-define=API_URL=https://blowjobs-backend-production.up.railway.app/api/v1"
+  command = "bash netlify-build.sh"
   publish = "build/web"
 
 [build.environment]
