@@ -130,13 +130,16 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
         // Main content
         Column(
           children: [
-            // Card stack
+            // Card stack with top margin
             Expanded(
-              child: swipeState.isLoading
-                ? _buildLoadingState()
-                : swipeState.cards.isEmpty
-                  ? _buildEmptyState(isRecruiter, isDev)
-                  : _buildCardStack(swipeState.cards),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: swipeState.isLoading
+                  ? _buildLoadingState()
+                  : swipeState.cards.isEmpty
+                    ? _buildEmptyState(isRecruiter, isDev)
+                    : _buildCardStack(swipeState.cards),
+              ),
             ),
             
             // Action buttons
@@ -183,6 +186,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
               _dismissMatch();
               context.go('/chat');
             },
+            isRecruiter: isRecruiter,
           ),
       ],
     );

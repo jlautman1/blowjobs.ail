@@ -8,12 +8,14 @@ class MatchPopup extends StatelessWidget {
   final Map<String, dynamic> match;
   final VoidCallback onDismiss;
   final VoidCallback onMessage;
+  final bool isRecruiter;
 
   const MatchPopup({
     super.key,
     required this.match,
     required this.onDismiss,
     required this.onMessage,
+    required this.isRecruiter,
   });
 
   @override
@@ -65,25 +67,48 @@ class MatchPopup extends StatelessWidget {
                   
                   const SizedBox(height: 16),
                   
-                  Text(
-                    match['job']?['title'] ?? 'New Opportunity',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: AppColors.textPrimary,
-                    ),
-                  ).animate()
-                    .fadeIn(duration: 500.ms, delay: 200.ms),
-                  
-                  const SizedBox(height: 8),
-                  
-                  Text(
-                    'at ${match['company_name'] ?? 'Company'}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.textSecondary,
-                    ),
-                  ).animate()
-                    .fadeIn(duration: 500.ms, delay: 300.ms),
+                  // Different content for recruiters vs job seekers
+                  if (isRecruiter) ...[
+                    // For recruiters: show candidate name
+                    Text(
+                      match['candidate_name'] ?? match['first_name'] ?? 'Great Candidate',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                    ).animate()
+                      .fadeIn(duration: 500.ms, delay: 200.ms),
+                    const SizedBox(height: 8),
+                    Text(
+                      match['headline'] ?? 'Perfect match for your role!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.textSecondary,
+                      ),
+                    ).animate()
+                      .fadeIn(duration: 500.ms, delay: 300.ms),
+                  ] else ...[
+                    // For job seekers: show job title and company
+                    Text(
+                      match['job']?['title'] ?? 'New Opportunity',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                    ).animate()
+                      .fadeIn(duration: 500.ms, delay: 200.ms),
+                    const SizedBox(height: 8),
+                    Text(
+                      'at ${match['company_name'] ?? 'Company'}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.textSecondary,
+                      ),
+                    ).animate()
+                      .fadeIn(duration: 500.ms, delay: 300.ms),
+                  ],
                   
                   const SizedBox(height: 40),
                   
@@ -120,9 +145,11 @@ class MatchPopup extends StatelessWidget {
                   
                   const SizedBox(height: 40),
                   
-                  // Message
+                  // Message - different for recruiters vs job seekers
                   Text(
-                    'The recruiter is interested in your profile!\nStart a conversation to learn more.',
+                    isRecruiter
+                      ? 'This candidate is interested in your role!\nStart a conversation to learn more about them.'
+                      : 'This company is interested in your profile!\nStart a conversation to learn more about the role.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
