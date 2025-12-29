@@ -50,30 +50,24 @@ class EnvironmentNotifier extends StateNotifier<Environment> {
     }
   }
 
-  // Check if API URL is locked from build (deployed web app)
-  bool get isApiUrlLocked {
-    final buildApiUrl = apiUrlFromBuild;
-    return buildApiUrl != null && buildApiUrl.isNotEmpty;
-  }
-
   String get apiUrl {
-    // First check if API_URL was set from build (dart-define)
-    // This allows Netlify build to set the production URL
-    final buildApiUrl = apiUrlFromBuild;
-    if (buildApiUrl != null && buildApiUrl.isNotEmpty) {
-      // If build URL is set, always use it (production deployment)
-      // Environment switching won't affect the actual API URL on deployed web
-      return buildApiUrl;
-    }
-    
-    // Otherwise use environment-based URL (user can switch)
+    // Always respect the user's environment selection
+    // This allows switching between dev and prod on both local and deployed apps
     switch (state) {
       case Environment.development:
         return 'http://localhost:8080/api/v1';
       case Environment.production:
+        // If API_URL was set from build, use it; otherwise use default production URL
+        final buildApiUrl = apiUrlFromBuild;
+        if (buildApiUrl != null && buildApiUrl.isNotEmpty) {
+          return buildApiUrl;
+        }
         return 'https://blowjobs-backend-production.up.railway.app/api/v1';
     }
   }
+  
+  // Check if currently in development mode
+  bool get isDevelopment => state == Environment.development;
 
   String get displayName {
     switch (state) {

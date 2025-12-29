@@ -183,9 +183,6 @@ class _EnvironmentSwitcher extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final environmentNotifier = ref.read(environmentProvider.notifier);
-    final isApiUrlLocked = environmentNotifier.isApiUrlLocked;
-    final isWeb = kIsWeb;
     
     return Container(
       decoration: BoxDecoration(
@@ -217,14 +214,6 @@ class _EnvironmentSwitcher extends ConsumerWidget {
                   color: AppColors.primary,
                 ),
               ),
-              if (isApiUrlLocked && isWeb) ...[
-                const SizedBox(width: 4),
-                Icon(
-                  Iconsax.info_circle,
-                  size: 12,
-                  color: AppColors.warning,
-                ),
-              ],
               const SizedBox(width: 4),
               const Icon(
                 Iconsax.arrow_down_1,
@@ -237,33 +226,11 @@ class _EnvironmentSwitcher extends ConsumerWidget {
         itemBuilder: (context) => [
           PopupMenuItem(
             value: Environment.development,
-            enabled: !(isApiUrlLocked && isWeb), // Disable dev mode on deployed web
             child: Row(
               children: [
-                Icon(
-                  Iconsax.code,
-                  size: 18,
-                  color: (isApiUrlLocked && isWeb)
-                      ? AppColors.textTertiary
-                      : AppColors.textPrimary,
-                ),
+                const Icon(Iconsax.code, size: 18, color: AppColors.textPrimary),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Development'),
-                      if (isApiUrlLocked && isWeb)
-                        Text(
-                          'Not available on deployed site',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: AppColors.textTertiary,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
+                const Expanded(child: Text('Development')),
                 if (currentEnvironment == Environment.development) ...[
                   const SizedBox(width: 8),
                   const Icon(Iconsax.tick_circle, size: 18, color: AppColors.primary),
@@ -282,35 +249,11 @@ class _EnvironmentSwitcher extends ConsumerWidget {
                   const SizedBox(width: 8),
                   const Icon(Iconsax.tick_circle, size: 18, color: AppColors.primary),
                 ],
-                if (isApiUrlLocked && isWeb) ...[
-                  const SizedBox(width: 8),
-                  Icon(
-                    Iconsax.info_circle,
-                    size: 14,
-                    color: AppColors.primary,
-                  ),
-                ],
               ],
             ),
           ),
         ],
-        onSelected: (env) {
-          if (isApiUrlLocked && isWeb && env == Environment.development) {
-            // Show warning if trying to select dev mode on deployed web
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text(
-                  'Development mode is not available on deployed website. Using production backend.',
-                ),
-                backgroundColor: AppColors.warning,
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(seconds: 3),
-              ),
-            );
-            return;
-          }
-          onChanged(env);
-        },
+        onSelected: onChanged,
       ),
     );
   }

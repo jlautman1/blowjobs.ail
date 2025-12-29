@@ -315,9 +315,13 @@ func (s *Server) GetSwipeHistory(c *gin.Context) {
 func (s *Server) ResetSwipes(c *gin.Context) {
 	userID := c.MustGet("user_id").(uuid.UUID)
 	
-	// Only allow in development environment
-	if s.cfg.Environment != "development" {
-		c.JSON(http.StatusForbidden, gin.H{"error": "This endpoint is only available in development"})
+	// Allow if backend is in development OR frontend sent dev mode header
+	devModeHeader := c.GetHeader("X-Dev-Mode")
+	isBackendDev := s.cfg.Environment == "development"
+	isFrontendDev := devModeHeader == "true"
+	
+	if !isBackendDev && !isFrontendDev {
+		c.JSON(http.StatusForbidden, gin.H{"error": "This endpoint is only available in development mode"})
 		return
 	}
 	

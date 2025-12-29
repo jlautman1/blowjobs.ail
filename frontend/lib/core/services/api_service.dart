@@ -24,6 +24,13 @@ class ApiService {
         if (_authToken != null) {
           options.headers['Authorization'] = 'Bearer $_authToken';
         }
+        
+        // Add dev mode header if in development
+        final environment = _ref.read(environmentProvider);
+        if (environment == Environment.development) {
+          options.headers['X-Dev-Mode'] = 'true';
+        }
+        
         return handler.next(options);
       },
       onError: (error, handler) {
