@@ -33,7 +33,6 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   final _positionController = TextEditingController();
   final _bioController = TextEditingController();
   String _companySize = 'medium';
-  String _industry = 'Technology';
 
   @override
   void dispose() {

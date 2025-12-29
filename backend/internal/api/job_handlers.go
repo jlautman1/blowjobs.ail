@@ -341,20 +341,26 @@ func (s *Server) GetCandidateFeed(c *gin.Context) {
 	}
 
 	// Get job seeker profiles that recruiter hasn't swiped on
+	// Note: Removed is_profile_complete requirement to show more candidates during development
 	rows, err := s.db.Query(`
-		SELECT p.id, u.first_name, p.headline, COALESCE(p.summary, ''),
-		       p.experience_level, p.years_of_experience, p.skills, p.work_preference,
-		       p.preferred_locations, p.expected_salary_min, p.expected_salary_max,
-		       p.salary_currency, p.languages, p.certifications, p.open_to_relocation
+		SELECT p.id, u.first_name, COALESCE(p.headline, ''), COALESCE(p.summary, ''),
+		       COALESCE(p.experience_level, 'mid'), COALESCE(p.years_of_experience, 0), 
+		       COALESCE(p.skills, ARRAY[]::text[]), COALESCE(p.work_preference, 'any'),
+		       COALESCE(p.preferred_locations, ARRAY[]::text[]), 
+		       COALESCE(p.expected_salary_min, 0), COALESCE(p.expected_salary_max, 0),
+		       COALESCE(p.salary_currency, 'USD'), 
+		       COALESCE(p.languages, ARRAY[]::text[]), 
+		       COALESCE(p.certifications, ARRAY[]::text[]), 
+		       COALESCE(p.open_to_relocation, false)
 		FROM job_seeker_profiles p
 		JOIN users u ON u.id = p.user_id
 		WHERE u.is_active = true
-		AND p.is_profile_complete = true
+		AND u.user_type = 'job_seeker'
 		AND p.id NOT IN (
 			SELECT swiped_id FROM swipes 
 			WHERE swiper_id = $1 AND swipe_type = 'profile'
 		)
-		ORDER BY p.updated_at DESC
+		ORDER BY p.updated_at DESC, p.created_at DESC
 		LIMIT $2
 	`, userID, limit)
 

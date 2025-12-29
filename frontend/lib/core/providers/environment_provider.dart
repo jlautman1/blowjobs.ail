@@ -9,7 +9,7 @@ enum Environment {
 class EnvironmentNotifier extends StateNotifier<Environment> {
   static const String _storageKey = 'app_environment';
   
-  EnvironmentNotifier() : super(Environment.production) {
+  EnvironmentNotifier() : super(Environment.development) {
     _loadEnvironment();
   }
 

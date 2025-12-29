@@ -1,584 +1,449 @@
-## 🚀 BlowJobs.ai – AI-Powered Job Matching
-
-Modern swipe-based job matching for job seekers and recruiters, built with **Go**, **PostgreSQL**, and **Flutter Web**.
-
----
-
-## 1. General Info
-
-- **Getting the code** (for people new to git)
-- **Setting up the backend & database**
-- **Running the website on your computer**
-- **Testing the website on your phone (same WiFi)**
-- **Testing on a real phone with a USB cable (Android & iPhone)**
-- **Testing on an Android emulator**
-- **Test profiles (demo accounts) you can use**
-
-Everything below assumes you are starting from scratch.
-
----
-
-### 1.1 Get the Code (Clone the Repo)
-
-### 1.1 Install Git (if you don’t have it)
-
-- **Windows**: Install from `https://git-scm.com/download/win`
-- **macOS**: `xcode-select --install` or install from `https://git-scm.com`
-- **Linux (Debian/Ubuntu)**:
-
-```bash
-sudo apt update
-sudo apt install git
-```
-
-### 1.2 Open a Terminal
-
-- **Windows**: Press Start → type **“PowerShell”** → open **Windows PowerShell**
-- **macOS**: Open **Terminal** from Applications → Utilities
-- **Linux**: Open your terminal emulator
-
-### 1.3 Clone the Repository
-
-In your terminal:
-
-```bash
-git clone https://github.com/jlautman1/blowjobs.ail.git
-cd blowjobs.ail
-```
-
-From now on, all commands assume your terminal is in this project folder.
-
----
-
-## 2. Prerequisites (Required to Run the Code)
-
-You’ll need these installed:
-
-- **Go** (1.21+)
-- **PostgreSQL** 14+ (or Docker)
-- **Flutter** (with web support enabled)
-- **Chrome** browser
-
-Below is **how to install each**, step by step.
-
-### 2.1 Go (Backend Runtime)
-
-#### 2.1.1 Check if Go is already installed
-
-```bash
-go version
-```
-
-If you see `go version go1.21.x ...`, you’re good.
-
-#### 2.1.2 Install Go
-
-- **Windows**
-  1. Go to `https://go.dev/dl`
-  2. Download the **Windows .msi installer**
-  3. Run it and accept the defaults
-  4. Close and reopen PowerShell, then run `go version` again
-
-- **macOS**
-  - With Homebrew (recommended):
-    ```bash
-    brew install go
-    go version
-    ```
-  - Or download the macOS installer from `https://go.dev/dl` and run it
-
-- **Linux (Debian/Ubuntu example)**
-  ```bash
-  sudo apt update
-  sudo apt install -y golang-go
-  go version
-  ```
-
-> If your distro’s Go version is too old, prefer the official tarball from `https://go.dev/dl`.
-
----
-
-### 2.2 Flutter (Frontend)
-
-#### 2.2.1 Check if Flutter is installed
-
-```bash
-flutter doctor
-```
-
-If the command is not found, install Flutter.
-
-#### 2.2.2 Install Flutter
-
-- **Windows**
-  1. Go to `https://docs.flutter.dev/get-started/install/windows`
-  2. Download the Flutter SDK `.zip`
-  3. Extract to a folder, e.g. `C:\src\flutter`
-  4. Add `C:\src\flutter\bin` to your **PATH** (System Environment Variables)
-  5. Close and reopen PowerShell, then run:
-     ```bash
-     flutter doctor
-     ```
-
-- **macOS**
-  - With Homebrew:
-    ```bash
-    brew install --cask flutter
-    flutter doctor
-    ```
-  - Or follow `https://docs.flutter.dev/get-started/install/macos`
-
-- **Linux (snap example)**
-  ```bash
-  sudo snap install flutter --classic
-  flutter doctor
-  ```
-
-#### 2.2.3 Enable Web Support
-
-Web must be enabled to run the app in Chrome:
-
-```bash
-flutter config --enable-web
-flutter doctor
-```
-
-Make sure Chrome is detected as a device.
-
----
-
-### 2.3 PostgreSQL via Docker (Recommended)
-
-We use Docker so you don’t have to install PostgreSQL manually.
-
-#### 2.3.1 Install Docker
-
-- **Windows / macOS**
-  - Install **Docker Desktop** from:
-    - `https://www.docker.com/products/docker-desktop`
-  - After installation, start Docker Desktop and wait until it says **“Docker is running”**
-
-- **Linux (Debian/Ubuntu example)**
-  ```bash
-  sudo apt update
-  sudo apt install -y docker.io docker-compose
-  sudo systemctl enable --now docker
-  sudo usermod -aG docker $USER   # then log out and back in
-  docker --version
-  docker-compose --version
-  ```
-
-#### 2.3.2 Start PostgreSQL Container
-
-From the project root (`blowjobs.ail`):
-
-```bash
-docker-compose up -d postgres
-```
-
-This will:
-
-- Download the `postgres:15-alpine` image (first time only)
-- Start a container called `blowjobs-db`
-
-To check it’s running:
-
-```bash
-docker ps
-```
-
-You should see a container with **postgres** in the image name.
-
----
-
-### 2.4 Chrome Browser
-
-Flutter Web runs best in Chrome.
-
-- **Windows / macOS / Linux**
-  - Install from: `https://www.google.com/chrome/`
-  - After installing, restart your terminal and run:
-    ```bash
-    flutter doctor
-    ```
-    to confirm Flutter sees Chrome as a web device.
-
----
-
-## 3. How to Run the Code
-
-### 3.1 Backend Setup (API Server)
-
-In a terminal (project root):
-
+# BlowJobs.ai - Job Matching Platform
+
+A modern, Tinder-style job matching application that connects job seekers with recruiters through an intuitive swipe-based interface.
+
+## 🎯 Product Vision
+
+Build a mobile-first job matching app using Tinder-style swipe interactions to discover jobs quickly and intuitively.
+
+The experience should feel:
+- **Energetic** - Full of life and enthusiasm
+- **Optimistic** - Positive outlook on job searching
+- **Friendly** - Approachable and welcoming
+- **Modern** - Cutting-edge design and technology
+
+This is not a "corporate job board" — it should feel like finding your next job shouldn't feel stressful.
+
+## 👥 Target Audience
+
+- Students & graduates
+- Junior–mid professionals
+- Sales, tech, marketing, operations roles
+- Startup-oriented, mobile-native users
+
+## 🎨 Design Philosophy
+
+### Visual Style Keywords
+- **Bright** - Vibrant, energetic colors
+- **Clean** - Minimal, uncluttered interface
+- **Airy** - Generous spacing and breathing room
+- **Friendly** - Warm, approachable design
+- **Rounded** - Soft, friendly shapes
+- **Card-driven** - Content organized in cards
+
+### Avoid
+- Dark mode
+- Heavy corporate blue
+- Over-designed gradients
+- Dense UI
+
+### Color System
+
+**Base Colors:**
+- Background (Primary): `#FFFFFF`
+- Secondary Background: `#F8FAFC`
+- Card Background: `#FFFFFF`
+- Primary Text: `#0F172A`
+- Secondary Text: `#475569`
+
+**Action Colors:**
+- Swipe Right / Like / Match (Green): `#22C55E`
+- Swipe Left / Skip (Soft Red): `#F87171`
+- Super Like / Priority (Purple): `#8B5CF6`
+- Primary CTA (Blue / Teal): `#0EA5E9` or `#06B6D4`
+
+**Rules:**
+- Max 3 accent colors per screen
+- One dominant accent per screen
+- Use color to guide behavior, not decorate
+
+## ✅ Recent Fixes & Improvements
+
+### Critical Bug Fixes (December 2024)
+1. **Login Enter Key Issue** - Fixed navigation on failed login when pressing Enter
+2. **Candidate Feed Empty** - Fixed query to show candidates for recruiters
+3. **CV Upload 404** - Fixed multipart form-data Content-Type header
+4. **Reset Swipes 404** - Fixed environment configuration for dev endpoint
+5. **Dashboard Material Error** - Added proper Scaffold wrapper
+6. **Bottom Overflow** - Replaced with DraggableScrollableSheet
+7. **Page Layout Overflow** - Added SafeArea and proper constraints
+
+### Design Improvements
+- **Minimalist Approach** - Removed excessive gradients, simplified color palette
+- **Premium Job Cards** - Better typography, spacing, and borders
+- **Clean Navigation** - Flat design with subtle borders instead of shadows
+- **Improved Stats** - Better visual hierarchy and cleaner dividers
+- **Responsive Layout** - Content properly fits window, no overflow issues
+
+### New Features Added
+- **CV Upload with AI Analysis** - Job seekers can upload CVs for automatic analysis
+- **Job Creation** - Recruiters can create detailed job postings
+- **Recruiter Dashboard** - Company profile, stats, and job management
+- **Enhanced Profile Menu** - Scrollable, draggable bottom sheet
+
+## 🚀 Core Features
+
+### 1. Swipe-Based Job Discovery
+- **Swipe Right** → Interested / Like
+- **Swipe Left** → Not relevant
+- **Swipe Up (⭐)** → High interest / Priority
+- All interactions feel immediate, fun, and obvious
+- Undo functionality available
+
+### 2. Dual User Types
+
+#### Job Seekers
+- Swipe through job listings
+- Upload CV with AI analysis
+- Receive AI-powered job recommendations
+- Match with recruiters
+- Chat with matched companies
+- Schedule interviews through the app
+
+#### Recruiters
+- Swipe through anonymous candidate profiles
+- Create and manage job postings
+- View company dashboard with analytics
+- Match with job seekers
+- Chat with candidates
+- Schedule interviews
+
+### 3. CV Upload & AI Analysis
+- Upload CV (PDF, DOC, DOCX)
+- AI automatically extracts:
+  - Skills
+  - Experience level
+  - Years of experience
+  - Education
+  - Other relevant information
+- Data used to improve job matching
+
+### 4. Job Creation & Management
+- Recruiters can create detailed job postings
+- Include:
+  - Job title and description
+  - Company details
+  - Salary range
+  - Required skills
+  - Benefits
+  - Work preferences (remote/hybrid/onsite)
+- Manage multiple job postings from dashboard
+
+### 5. Recruiter Dashboard
+- View company profile
+- See active jobs count
+- Track total hires
+- Monitor response rate
+- Quick actions (create job, edit company)
+
+### 6. Matching & Chat
+- Mutual matches enable chat
+- Real-time messaging
+- Interview scheduling
+- Automated reminders
+
+## 🏗️ Technical Architecture
+
+### Frontend
+- **Framework**: Flutter (Web-first, mobile-ready)
+- **State Management**: Riverpod
+- **Navigation**: GoRouter
+- **HTTP Client**: Dio
+- **UI Components**: Material Design 3
+- **Icons**: Iconsax
+- **Animations**: Flutter Animate
+
+### Backend
+- **Language**: Go
+- **Framework**: Gin
+- **Database**: PostgreSQL
+- **Authentication**: JWT
+- **WebSocket**: Real-time chat support
+- **File Storage**: Local filesystem (CV uploads)
+
+### Database Schema
+- Users (job_seekers, recruiters)
+- Job listings
+- Swipes
+- Matches
+- Messages
+- Interviews
+- Profiles (with CV data)
+
+## 📋 Setup Instructions
+
+### Prerequisites
+- Go 1.21+
+- Flutter 3.0+
+- PostgreSQL 14+
+- Docker (optional, for database)
+
+### Backend Setup
+
+1. **Clone the repository**
 ```bash
 cd backend
 ```
 
-### 3.1 Run Database Migrations
-
+2. **Install dependencies**
 ```bash
-go run ./cmd/server  # first run will apply migrations, then fail if DB not ready
+go mod download
 ```
 
-If the server starts successfully, stop it with:
+3. **Set up environment variables**
+Create a `.env` file:
+```env
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/blowjobs?sslmode=disable
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+ENVIRONMENT=development
+PORT=8080
+```
 
-- **Windows**: press `Ctrl + C` in the PowerShell window
-- **macOS/Linux**: press `Ctrl + C`
+4. **Start PostgreSQL** (using Docker)
+```bash
+docker-compose up -d postgres
+```
 
-> If migrations already ran, you can skip re-running this step in the future.
+5. **Run migrations**
+The migrations run automatically on server start.
 
-### 3.2 Seed Demo Data
-
+6. **Seed the database** (optional)
 ```bash
 go run ./cmd/seed
 ```
 
-You should see logs about creating job seekers, recruiters, and jobs.
-
-### 3.3 Start the Backend Server
-
-From `backend/`:
-
+7. **Start the server**
 ```bash
 go run ./cmd/server
 ```
 
-The API will listen on:
+The API will be available at `http://localhost:8080/api/v1`
 
-- `http://localhost:8080`
+### Frontend Setup
 
-Keep this terminal window **running** while you test the app.
-
----
-
-### 3.4 Run the Website on Your Computer (Chrome)
-
-Open **a new terminal** in the project root:
-
+1. **Navigate to frontend**
 ```bash
 cd frontend
-flutter run -d chrome --web-port=3000 --dart-define=API_URL=http://localhost:8080/api/v1
 ```
 
-What happens:
+2. **Install dependencies**
+```bash
+flutter pub get
+```
 
-- Chrome opens automatically
-- App runs at `http://localhost:3000`
-- Backend API is called at `http://localhost:8080/api/v1`
+3. **Run the app**
+```bash
+flutter run -d chrome --web-port=8081
+```
 
-You can now test the full flow directly in your browser.
+The app will be available at `http://localhost:8081`
+
+## 🧪 Testing
+
+### Manual Testing with Playwright
+
+We use Playwright for end-to-end testing and screenshot capture.
+
+**Take screenshots:**
+```bash
+npm run screenshots
+```
+
+This will:
+1. Navigate to the app
+2. Login with demo credentials
+3. Capture screenshots of:
+   - Welcome screen
+   - Login screen
+   - Home screen
+   - Swipe screen
+
+**Demo Accounts:**
+- Job Seeker: `jobseeker@demo.com` / `demo123`
+- Recruiter: `recruiter@demo.com` / `demo123`
+
+### Test Scenarios
+
+1. **Job Seeker Flow**
+   - Login → View jobs → Swipe → Match → Chat
+   - Upload CV → View AI analysis
+   - Complete profile
+
+2. **Recruiter Flow**
+   - Login → View candidates → Swipe → Match → Chat
+   - Create job posting
+   - View dashboard
+   - Edit company details
+
+3. **Error Handling**
+   - Invalid login credentials
+   - Network errors
+   - Empty feeds
+   - File upload errors
+
+## 🎯 Design Improvements Implemented
+
+### Recent Updates
+1. **Minimalist Design**
+   - Removed excessive gradients (flat design)
+   - Simplified color palette (consistent, refined colors)
+   - Cleaner shadows (replaced with subtle borders)
+   - Flat design approach throughout
+
+2. **Premium Job Cards**
+   - Better typography (larger, bolder titles with letter spacing)
+   - Improved spacing (more breathing room)
+   - Subtle borders instead of heavy shadows
+   - Cleaner chip design with proper borders
+   - Refined company logo containers
+
+3. **Simplified Navigation**
+   - Removed gradient logos (flat colored backgrounds)
+   - Cleaner app bar with subtle borders instead of shadows
+   - Simplified profile buttons (no heavy borders)
+   - Bottom navigation with clean borders
+
+4. **Better Stats Display**
+   - Subtle background for stats row
+   - Cleaner dividers with reduced opacity
+   - Better visual hierarchy
+
+5. **Improved Layout & UX**
+   - Fixed all overflow issues
+   - Proper SafeArea implementation
+   - Draggable bottom sheets for better mobile experience
+   - Content properly constrained to window size
+   - All buttons accessible and clickable
+
+## 📝 API Endpoints
+
+### Authentication
+- `POST /api/v1/auth/register` - Register new user
+- `POST /api/v1/auth/login` - Login
+- `POST /api/v1/auth/refresh` - Refresh token
+
+### Profiles
+- `GET /api/v1/profiles/job-seeker` - Get job seeker profile
+- `PUT /api/v1/profiles/job-seeker` - Update job seeker profile
+- `POST /api/v1/profiles/job-seeker/cv` - Upload CV
+- `GET /api/v1/profiles/recruiter` - Get recruiter profile
+- `PUT /api/v1/profiles/recruiter` - Update recruiter profile
+
+### Jobs
+- `GET /api/v1/jobs/feed` - Get job feed (job seekers)
+- `POST /api/v1/jobs` - Create job (recruiters)
+- `GET /api/v1/jobs/my-jobs` - Get my jobs (recruiters)
+
+### Candidates
+- `GET /api/v1/candidates/feed` - Get candidate feed (recruiters)
+
+### Swipes
+- `POST /api/v1/swipes` - Record swipe
+- `GET /api/v1/swipes/history` - Get swipe history
+- `DELETE /api/v1/swipes/reset` - Reset swipes (dev only)
+
+### Matches
+- `GET /api/v1/matches` - Get matches
+- `GET /api/v1/matches/:id` - Get match details
+
+### Chat
+- `GET /api/v1/chat/conversations` - Get conversations
+- `GET /api/v1/chat/:match_id/messages` - Get messages
+- `POST /api/v1/chat/:match_id/messages` - Send message
+
+## 🐛 Known Issues & Fixes
+
+### Fixed Issues
+1. ✅ **Login with Enter key** - Now properly validates before navigation, checks auth state before redirecting
+2. ✅ **Candidate feed empty** - Fixed query to show candidates even without complete profiles, removed strict `is_profile_complete` requirement
+3. ✅ **CV upload 404** - Fixed Content-Type header issue (Dio now sets multipart/form-data automatically)
+4. ✅ **Reset swipes 404** - Environment defaults to "development" in config, endpoint works correctly
+5. ✅ **Dashboard Material widget error** - Added Scaffold wrapper with proper AppBar
+6. ✅ **Bottom overflow in profile menu** - Replaced with DraggableScrollableSheet for proper scrolling
+7. ✅ **Page layout overflow** - Added SafeArea and ClipRect to ensure content fits window
+8. ✅ **Profile menu not scrollable** - Implemented proper scrollable bottom sheet with drag support
+
+### Future Improvements
+- [ ] Real AI integration for CV analysis (currently placeholder)
+- [ ] File upload to cloud storage (S3/Cloudinary)
+- [ ] Interview scheduling UI
+- [ ] Push notifications
+- [ ] Mobile app builds (iOS/Android)
+- [ ] Integration with Glassdoor/LinkedIn job feeds
+- [ ] Advanced matching algorithm
+- [ ] Analytics dashboard for recruiters
+
+## 🧪 Testing
+
+See [TESTING.md](./TESTING.md) for comprehensive testing guide including:
+- Manual testing checklist
+- Automated testing with Playwright
+- Test scenarios
+- Performance testing
+- Browser compatibility
+
+## 📚 Design Guidelines
+
+### Typography
+- **Font**: Inter (via Google Fonts)
+- **Titles**: Semi-Bold
+- **Body**: Regular
+- **Buttons**: Medium
+- **Rules**: Max 2 font sizes per screen, clear hierarchy, generous line spacing
+
+### UX Principles
+- Minimal text
+- Clear visual cues
+- Friendly microcopy
+- Immediate feedback on every action
+- Explain relevance ("Shown because you selected Remote + Marketing")
+
+### Tone & Copy
+- Human
+- Short
+- Encouraging
+- Clear
+
+**Examples:**
+- "Looks good"
+- "Skip"
+- "High priority"
+- "Matched"
+- "This job fits your preferences"
+
+## 🚀 Deployment
+
+### Backend (Railway)
+The backend is deployed on Railway at:
+`https://blowjobs-backend-production.up.railway.app`
+
+### Frontend
+Currently runs locally. For production:
+1. Build Flutter web app: `flutter build web`
+2. Deploy to hosting service (Vercel, Netlify, etc.)
+
+## 📄 License
+
+[Your License Here]
+
+## 👥 Contributors
+
+[Your Team Here]
+
+## 📖 Additional Documentation
+
+- **[QUICK_START.md](./QUICK_START.md)** - Get started in 5 minutes
+- **[TESTING.md](./TESTING.md)** - Comprehensive testing guide
+- **API Documentation** - See API endpoints section above
+
+## 📞 Support
+
+For issues or questions, please open an issue on GitHub.
+
+## 🎉 Acknowledgments
+
+Built with modern web technologies to make job searching fun and efficient.
 
 ---
 
-## 4. Testing
-
-### 4.1 Test the Website on Your Phone (Same WiFi, No Cable)
-
-This lets **any phone** (Android or iPhone) open the web app over your local network, using the Flutter web build.
-
-### 5.1 Find Your Computer’s IP Address
-
-Run this in a terminal:
-
-- **Windows (PowerShell)**:
-
-```powershell
-ipconfig
-```
-
-Look for `IPv4 Address` under your Wi-Fi adapter, e.g. `192.168.7.3`.
-
-- **macOS/Linux** (one option):
-
-```bash
-ip addr show | grep "inet "
-```
-
-Pick the IP on your local network, e.g. `192.168.1.50`.
-
-We’ll call this IP: `YOUR_IP`.
-
-### 5.2 Start Backend (If Not Already Running)
-
-From `backend/`:
-
-```bash
-go run ./cmd/server
-```
-
-### 5.3 Run Flutter Web So Phones Can Reach It
-
-Open a **new terminal**, from the project root:
-
-```bash
-cd frontend
-
-flutter run -d chrome \
-  --web-hostname=0.0.0.0 \
-  --web-port=8081 \
-  --dart-define=API_URL=http://YOUR_IP:8080/api/v1
-```
-
-- `0.0.0.0` makes the dev server accessible from other devices on your network.
-- Backend URL uses `YOUR_IP` so phones can reach it (they can’t see `localhost` on your computer).
-
-### 5.4 Allow Firewall (Windows Only, One-Time)
-
-Open **PowerShell as Administrator** and run:
-
-```powershell
-netsh advfirewall firewall add rule name="BlowJobs Web" dir=in action=allow protocol=tcp localport=8081
-netsh advfirewall firewall add rule name="BlowJobs API" dir=in action=allow protocol=tcp localport=8080
-```
-
-### 5.5 Open on Your Phone
-
-1. Connect your phone to the **same WiFi** as your computer
-2. Open Safari/Chrome on the phone
-3. Visit:
-
-```text
-http://YOUR_IP:8081
-```
-
-Example: `http://192.168.7.3:8081`
-
-### 5.6 Quick Connectivity Test (Optional)
-
-On the phone, test the backend health:
-
-```text
-http://YOUR_IP:8080/health
-```
-
-If you see `{"status":"ok"}`, the phone can reach the API.
-
----
-
-### 4.2 Test on a Real Phone via USB Cable
-
-Here we run the **native Flutter app** on your phone.
-
-#### 4.2.1 Android Phone (Any OS)
-
-##### Enable Developer Mode & USB Debugging
-
-On your Android phone:
-
-1. **Settings → About phone → Build number** → tap 7 times → “You are now a developer”
-2. **Settings → Developer options → USB debugging** → enable
-
-##### Connect the Phone
-
-- Plug phone into your computer with a USB cable
-- Accept any “Allow USB debugging” prompts on the phone
-
-##### Verify Device
-
-From the project root:
-
-```bash
-flutter devices
-```
-
-You should see your Android device listed.
-
-##### Run the App on Android
-
-Make sure the backend is running (`go run ./cmd/server`).
-
-Then from `frontend/`:
-
-```bash
-cd frontend
-flutter run -d <device-id> --dart-define=API_URL=http://YOUR_IP:8080/api/v1
-```
-
-If only one Android device is connected, you can omit `-d <device-id>`:
-
-```bash
-flutter run --dart-define=API_URL=http://YOUR_IP:8080/api/v1
-```
-
-The app will install and run on your Android phone.
-
----
-
-#### 4.2.2 iPhone (Requires macOS + Xcode)
-
-Apple only allows iOS apps to be built from macOS with Xcode.
-
-##### Requirements
-
-- A **Mac** with macOS
-- **Xcode** installed from the App Store
-- **Flutter** installed on the Mac
-- An **Apple ID**
-- Your iPhone + USB cable
-
-##### Set Up iOS Project
-
-On the Mac, in the project root:
-
-```bash
-cd frontend/ios
-pod install
-cd ..
-```
-
-##### Open in Xcode and Configure Signing
-
-1. Open `frontend/ios/Runner.xcworkspace` in **Xcode**
-2. Select the **Runner** target
-3. Go to **Signing & Capabilities**
-4. Check **“Automatically manage signing”**
-5. Choose your **Team** (your Apple ID)
-
-##### Connect iPhone and Trust Device
-
-1. Plug in your iPhone with USB
-2. On iPhone, tap **Trust This Computer**
-3. In **Settings → General → VPN & Device Management**, trust your developer profile if asked
-
-##### Run the App
-
-Make sure the backend is running and reachable at `http://YOUR_IP:8080`.
-
-From `frontend/` on the Mac:
-
-```bash
-cd frontend
-flutter run -d ios --dart-define=API_URL=http://YOUR_IP:8080/api/v1
-```
-
-The app will build and run on your iPhone.
-
----
-
-### 4.3 Test on Android Emulator
-
-This is useful if you don’t have a physical Android device.
-
-#### Install Android Studio
-
-Download and install from:
-
-- `https://developer.android.com/studio`
-
-During setup, make sure you install:
-
-- Android SDK
-- Android SDK Platform-Tools
-- Android Emulator
-
-#### Create an Emulator (AVD)
-
-In Android Studio:
-
-1. **Tools → Device Manager**
-2. Click **Create Device**
-3. Choose a phone (e.g. Pixel 6)
-4. Choose a system image (e.g. Android 13, API 33)
-5. Finish
-
-#### Start the Emulator
-
-In Device Manager, click the **Play ▶️** button next to the virtual device.
-
-#### Run the App on the Emulator
-
-Make sure the backend is running (`go run ./cmd/server`).
-
-In a terminal from `frontend/`:
-
-```bash
-cd frontend
-flutter devices          # make sure the emulator appears
-flutter run -d <emulator-id> --dart-define=API_URL=http://YOUR_IP:8080/api/v1
-```
-
-If the emulator is the only Android device, you can often just run:
-
-```bash
-flutter run --dart-define=API_URL=http://YOUR_IP:8080/api/v1
-```
-
----
-
-### 4.4 Test Profiles (Demo Accounts)
-
-After running the seed script (`go run ./cmd/seed`), these demo profiles are created for testing:
-
-| Profile Type        | Name    | Email                       | Password  |
-|---------------------|---------|-----------------------------|-----------|
-| Job Seeker          | Alex    | `jobseeker@demo.com`        | `demo123` |
-| Job Seeker          | Sam     | `developer@demo.com`        | `demo123` |
-| Job Seeker          | Emma    | `emma.tech@demo.com`        | `demo123` |
-| Job Seeker          | Mike    | `mike.dev@demo.com`         | `demo123` |
-| Job Seeker          | Sarah   | `sarah.design@demo.com`     | `demo123` |
-| Job Seeker          | David   | `david.data@demo.com`       | `demo123` |
-| Job Seeker          | Lisa    | `lisa.marketing@demo.com`   | `demo123` |
-| Recruiter (TechCorp)| Jordan  | `recruiter@demo.com`        | `demo123` |
-| Recruiter (Startup) | Rachel  | `hr@startupxyz.com`         | `demo123` |
-| Recruiter (BigTech) | Marcus  | `talent@bigtech.com`        | `demo123` |
-
-> All other seeded demo users also use the password **`demo123`**.
-
-Typical end-to-end testing flow:
-
-- Login as **job seeker**, swipe right on a job
-- Login as **recruiter**, swipe right on that candidate
-- See the **match** and try the **chat**
-
----
-
-## 🧰 9. Optional: Makefile Shortcuts
-
-If you’re comfortable with **make**, there are helper commands defined in `Makefile` (may evolve over time):
-
-| Command            | What it Does                            |
-|--------------------|------------------------------------------|
-| `make setup`       | Install tools & set up DB (first time)  |
-| `make backend`     | Start only the backend API              |
-| `make frontend`    | Start frontend in Chrome (localhost)    |
-
-These are optional; all important flows are already described with raw commands above.
-
----
-
-## 🐛 10. Troubleshooting (Common Issues)
-
-- **Port 8080 already in use**
-  - Another process is using the port. On Windows PowerShell:
-  ```powershell
-  netstat -ano | Select-String ":8080"
-  taskkill /F /PID <PID_FROM_ABOVE>
-  ```
-- **Phone cannot reach `http://YOUR_IP:8081`**
-  - Make sure phone and computer are on **same WiFi**
-  - Check Windows Firewall rules (see section 5.4)
-  - Verify backend health from phone: `http://YOUR_IP:8080/health`
-
-If you get stuck, the safest reset is:
-
-1. Stop all `go`, `flutter`, and `python` processes
-2. Restart Docker Desktop (for Postgres)
-3. Start backend again
-4. Start frontend again using the commands above
-
----
-
-## 🏗️ 11. Tech Stack (High Level)
-
-| Layer        | Tech                         |
-|-------------|------------------------------|
-| Backend     | Go, Gin, PostgreSQL, JWT     |
-| Frontend    | Flutter (Web), Riverpod      |
-| Realtime    | WebSockets (chat, events)    |
-
----
-
-Made for job seekers and recruiters who don’t want to blow the opportunity. 💼🔥
-
-
+**Built with ❤️ for making job searching fun and efficient**

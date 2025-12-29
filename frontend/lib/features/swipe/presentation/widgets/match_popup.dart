@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../presentation/widgets/gold_shimmer.dart';
 
 class MatchPopup extends StatelessWidget {
   final Map<String, dynamic> match;
@@ -45,7 +44,7 @@ class MatchPopup extends StatelessWidget {
             child: Center(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(32, 32, 32, bottomPadding),
-              child: Column(
+                child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // "It's a Match!" header
@@ -192,7 +191,8 @@ class MatchPopup extends StatelessWidget {
               ),
             ),
           ),
-        ),
+          ),
+        ],
       ),
     );
   }

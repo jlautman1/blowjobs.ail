@@ -31,6 +31,11 @@ func main() {
 	if err := database.RunMigrations(db); err != nil {
 		log.Fatalf("Failed to run migrations: %v", err)
 	}
+	
+	// Run v2 migrations (CV upload, company details)
+	if err := database.RunMigrationsV2(db); err != nil {
+		log.Printf("Warning: v2 migrations failed (may already be applied): %v", err)
+	}
 
 	// Initialize WebSocket hub
 	hub := websocket.NewHub()

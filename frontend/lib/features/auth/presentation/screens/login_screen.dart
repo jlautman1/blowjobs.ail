@@ -40,15 +40,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _passwordController.text,
     );
     
-    // Only navigate if login was successful
+    // Only navigate if login was successful - check both success flag and auth state
+    // Don't navigate if login failed - let the router handle it based on auth state
     if (success && mounted) {
-      // Wait a tiny bit to ensure state is updated
-      await Future.delayed(const Duration(milliseconds: 100));
-      if (mounted) {
-        context.go('/home');
+      final authState = ref.read(authStateProvider);
+      if (authState.isAuthenticated && !authState.isLoading) {
+        // Double-check that we're still authenticated after a brief delay
+        await Future.delayed(const Duration(milliseconds: 50));
+        if (mounted) {
+          final currentAuthState = ref.read(authStateProvider);
+          // Only navigate if still authenticated and no error
+          if (currentAuthState.isAuthenticated && 
+              !currentAuthState.isLoading && 
+              currentAuthState.error == null) {
+            context.go('/home');
+          }
+        }
       }
     }
-    // If login failed, stay on login screen and show error (error is already set in state)
+    // If login failed, stay on login screen - error is already set in state
+    // Router will not redirect because isAuthenticated is false
   }
 
   @override
@@ -148,6 +159,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         }
                         return null;
                       },
+                      onSubmitted: (_) => _handleLogin(),
                     ).animate()
                       .fadeIn(duration: 600.ms, delay: 400.ms)
                       .slideY(begin: 0.1),

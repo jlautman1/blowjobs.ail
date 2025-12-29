@@ -174,7 +174,6 @@ class _NewMatchCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final jobTitle = match['job']?['title'] ?? 'Job Opportunity';
     final companyName = match['company_name'] ?? 'Company';
     
     return GestureDetector(

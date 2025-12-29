@@ -3,7 +3,12 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/blowjobs-ai/backend/internal/models"
@@ -18,13 +23,19 @@ func (s *Server) GetJobSeekerProfile(c *gin.Context) {
 	var profile models.JobSeekerProfile
 	var educationJSON, workExpJSON []byte
 
+	var cvURL sql.NullString
+	var cvUploadedAt sql.NullTime
+	var cvAnalysisJSON []byte
+
 	err := s.db.QueryRow(`
 		SELECT p.id, p.user_id, u.first_name, p.headline, p.summary, p.skills,
 		       p.experience_level, p.years_of_experience, p.education, p.work_experience,
 		       p.certifications, p.languages, p.preferred_locations, p.work_preference,
 		       p.expected_salary_min, p.expected_salary_max, p.salary_currency,
 		       p.available_from, p.open_to_relocation, p.desired_job_titles, p.industries,
-		       p.is_profile_complete, p.profile_completeness, p.created_at, p.updated_at
+		       p.is_profile_complete, p.profile_completeness, 
+		       p.cv_url, p.cv_uploaded_at, p.cv_analysis,
+		       p.created_at, p.updated_at
 		FROM job_seeker_profiles p
 		JOIN users u ON u.id = p.user_id
 		WHERE p.user_id = $1
@@ -37,6 +48,7 @@ func (s *Server) GetJobSeekerProfile(c *gin.Context) {
 		&profile.SalaryCurrency, &profile.AvailableFrom, &profile.OpenToRelocation,
 		pq.Array(&profile.DesiredJobTitles), pq.Array(&profile.Industries),
 		&profile.IsProfileComplete, &profile.ProfileCompleteness,
+		&cvURL, &cvUploadedAt, &cvAnalysisJSON,
 		&profile.CreatedAt, &profile.UpdatedAt,
 	)
 
@@ -53,7 +65,48 @@ func (s *Server) GetJobSeekerProfile(c *gin.Context) {
 	json.Unmarshal(educationJSON, &profile.Education)
 	json.Unmarshal(workExpJSON, &profile.WorkExperience)
 
-	c.JSON(http.StatusOK, profile)
+	// Build response with CV info
+	response := map[string]interface{}{
+		"id":                  profile.ID,
+		"user_id":             profile.UserID,
+		"first_name":          profile.FirstName,
+		"headline":             profile.Headline,
+		"summary":              profile.Summary,
+		"skills":               profile.Skills,
+		"experience_level":     profile.ExperienceLevel,
+		"years_of_experience":  profile.YearsOfExperience,
+		"education":            profile.Education,
+		"work_experience":      profile.WorkExperience,
+		"certifications":      profile.Certifications,
+		"languages":            profile.Languages,
+		"preferred_locations":  profile.PreferredLocations,
+		"work_preference":      profile.WorkPreference,
+		"expected_salary_min":  profile.ExpectedSalaryMin,
+		"expected_salary_max":  profile.ExpectedSalaryMax,
+		"salary_currency":      profile.SalaryCurrency,
+		"available_from":       profile.AvailableFrom,
+		"open_to_relocation":   profile.OpenToRelocation,
+		"desired_job_titles":   profile.DesiredJobTitles,
+		"industries":           profile.Industries,
+		"is_profile_complete":  profile.IsProfileComplete,
+		"profile_completeness": profile.ProfileCompleteness,
+		"created_at":           profile.CreatedAt,
+		"updated_at":           profile.UpdatedAt,
+	}
+
+	if cvURL.Valid {
+		response["cv_url"] = cvURL.String
+	}
+	if cvUploadedAt.Valid {
+		response["cv_uploaded_at"] = cvUploadedAt.Time
+	}
+	if len(cvAnalysisJSON) > 0 {
+		var analysis map[string]interface{}
+		json.Unmarshal(cvAnalysisJSON, &analysis)
+		response["cv_analysis"] = analysis
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 func (s *Server) UpdateJobSeekerProfile(c *gin.Context) {
@@ -214,5 +267,134 @@ func calculateProfileCompleteness(profile models.CreateJobSeekerProfileRequest) 
 	}
 
 	return total
+}
+
+// UploadCV handles CV file upload and AI analysis
+func (s *Server) UploadCV(c *gin.Context) {
+	userID := c.MustGet("user_id").(uuid.UUID)
+
+	// Get file from form
+	file, err := c.FormFile("cv")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No file provided"})
+		return
+	}
+
+	// Validate file type
+	ext := strings.ToLower(filepath.Ext(file.Filename))
+	if ext != ".pdf" && ext != ".doc" && ext != ".docx" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid file type. Only PDF, DOC, and DOCX are allowed"})
+		return
+	}
+
+	// Validate file size (5MB max)
+	if file.Size > 5*1024*1024 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File too large. Maximum size is 5MB"})
+		return
+	}
+
+	// Create uploads directory if it doesn't exist
+	uploadDir := "./uploads/cv"
+	if err := os.MkdirAll(uploadDir, 0755); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
+		return
+	}
+
+	// Generate unique filename
+	fileID := uuid.New().String()
+	filename := fmt.Sprintf("%s%s", fileID, ext)
+	filePath := filepath.Join(uploadDir, filename)
+
+	// Save file
+	src, err := file.Open()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open file"})
+		return
+	}
+	defer src.Close()
+
+	dst, err := os.Create(filePath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+	defer dst.Close()
+
+	if _, err := io.Copy(dst, src); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+
+	// Generate URL (in production, this would be a CDN URL)
+	cvURL := fmt.Sprintf("/uploads/cv/%s", filename)
+
+	// Basic AI Analysis (placeholder - in production, use actual AI service)
+	analysis := performCVAnalysis(file.Filename, filePath)
+
+	analysisJSON, _ := json.Marshal(analysis)
+
+	// Update profile with CV info
+	_, err = s.db.Exec(`
+		UPDATE job_seeker_profiles SET
+			cv_url = $1,
+			cv_uploaded_at = $2,
+			cv_analysis = $3,
+			updated_at = $4
+		WHERE user_id = $5
+	`, cvURL, time.Now(), analysisJSON, time.Now(), userID)
+
+	if err != nil {
+		// If profile doesn't exist, create it
+		_, err = s.db.Exec(`
+			INSERT INTO job_seeker_profiles (user_id, cv_url, cv_uploaded_at, cv_analysis, updated_at)
+			VALUES ($1, $2, $3, $4, $5)
+			ON CONFLICT (user_id) DO UPDATE SET
+				cv_url = EXCLUDED.cv_url,
+				cv_uploaded_at = EXCLUDED.cv_uploaded_at,
+				cv_analysis = EXCLUDED.cv_analysis,
+				updated_at = EXCLUDED.updated_at
+		`, userID, cvURL, time.Now(), analysisJSON, time.Now())
+		
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save CV info"})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":   "CV uploaded and analyzed successfully",
+		"cv_url":    cvURL,
+		"analysis":  analysis,
+	})
+}
+
+// performCVAnalysis performs basic analysis on the CV
+// In production, this would use an AI service to extract skills, experience, etc.
+func performCVAnalysis(filename, filePath string) map[string]interface{} {
+	// Placeholder analysis - in production, integrate with AI service
+	// For now, return basic structure that can be populated by actual AI
+	
+	// Extract filename info as placeholder
+	lowerName := strings.ToLower(filename)
+	
+	analysis := map[string]interface{}{
+		"skills":              []string{"JavaScript", "Python", "React"}, // Placeholder
+		"experience_level":    "mid",                                      // Placeholder
+		"years_of_experience": 3,                                          // Placeholder
+		"education":          []string{"Bachelor's Degree"},             // Placeholder
+		"analyzed_at":        time.Now().Format(time.RFC3339),
+		"status":             "completed",
+	}
+
+	// Basic keyword detection from filename (very simple placeholder)
+	if strings.Contains(lowerName, "senior") || strings.Contains(lowerName, "sr") {
+		analysis["experience_level"] = "senior"
+		analysis["years_of_experience"] = 7
+	} else if strings.Contains(lowerName, "junior") || strings.Contains(lowerName, "jr") {
+		analysis["experience_level"] = "junior"
+		analysis["years_of_experience"] = 1
+	}
+
+	return analysis
 }
 

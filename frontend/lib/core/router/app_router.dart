@@ -8,11 +8,14 @@ import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/welcome_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/profile/presentation/screens/profile_setup_screen.dart';
+import '../../features/profile/presentation/screens/cv_upload_screen.dart';
 import '../../features/swipe/presentation/screens/swipe_screen.dart';
 import '../../features/matches/presentation/screens/matches_screen.dart';
 import '../../features/chat/presentation/screens/chat_screen.dart';
 import '../../features/chat/presentation/screens/conversation_screen.dart';
 import '../../features/swipe/presentation/screens/swipe_history_screen.dart';
+import '../../features/jobs/presentation/screens/job_creation_screen.dart';
+import '../../features/recruiter/presentation/screens/recruiter_dashboard_screen.dart';
 import '../../core/theme/app_theme.dart';
 import '../providers/auth_provider.dart';
 
@@ -25,12 +28,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final isLoggedIn = authState.isAuthenticated;
       final isLoading = authState.isLoading;
+      final hasError = authState.error != null;
       final isLoggingIn = state.matchedLocation == '/login' ||
           state.matchedLocation == '/register' ||
           state.matchedLocation == '/';
       
       // Don't redirect while authentication is in progress
       if (isLoading) {
+        return null;
+      }
+      
+      // If there's an error on login/register page, stay on that page
+      if (hasError && isLoggingIn) {
         return null;
       }
       
@@ -106,6 +115,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const _PlaceholderScreen(title: 'My Profile', icon: Iconsax.user),
       ),
       GoRoute(
+        path: '/cv-upload',
+        builder: (context, state) => const CVUploadScreen(),
+      ),
+      GoRoute(
         path: '/settings',
         builder: (context, state) => const _PlaceholderScreen(title: 'Settings', icon: Iconsax.setting_2),
       ),
@@ -116,6 +129,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/swipe-history',
         builder: (context, state) => const SwipeHistoryScreen(),
+      ),
+      GoRoute(
+        path: '/job-creation',
+        builder: (context, state) => const JobCreationScreen(),
+      ),
+      GoRoute(
+        path: '/recruiter-dashboard',
+        builder: (context, state) => const RecruiterDashboardScreen(),
       ),
     ],
   );

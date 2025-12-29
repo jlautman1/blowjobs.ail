@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -144,7 +143,16 @@ class ApiService {
   }
 
   Future<void> resetSwipes() async {
-    await _dio.delete('/swipes/reset');
+    try {
+      await _dio.delete('/swipes/reset');
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        throw Exception('Reset swipes is only available in development mode');
+      } else if (e.response?.statusCode == 404) {
+        throw Exception('Reset endpoint not found. Make sure you are in development mode.');
+      }
+      throw Exception('Failed to reset swipes: ${e.message}');
+    }
   }
 
   // Match endpoints

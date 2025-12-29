@@ -15,10 +15,15 @@
     "docker:stop": "docker-compose down",
     "clean": "cd frontend & flutter clean",
     "seed": "cd backend & go run cmd/seed/main.go",
-    "db:setup": "docker-compose up -d postgres"
+    "db:setup": "docker-compose up -d postgres",
+    "test:e2e": "playwright test",
+    "screenshots": "node scripts/take_screenshots.js",
+    "test": "node scripts/comprehensive_test.js",
+    "test:phase1": "node scripts/comprehensive_test.js"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@playwright/test": "^1.57.0",
+    "concurrently": "^8.2.2",
+    "playwright": "^1.57.0"
   }
 }
-
