@@ -34,21 +34,9 @@ class EnvironmentNotifier extends StateNotifier<Environment> {
   }
 
   Future<void> _loadEnvironment() async {
-    // If API_URL is set from build (deployed web), use production
-    final buildApiUrl = apiUrlFromBuild;
-    if (buildApiUrl != null && buildApiUrl.isNotEmpty && kIsWeb) {
-      state = Environment.production;
-      // Save this preference
-      try {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setInt(_storageKey, Environment.production.index);
-      } catch (e) {
-        // Ignore storage errors
-      }
-      return;
-    }
-    
-    // Otherwise load from storage
+    // Load from storage (don't force production on deployed web)
+    // User can switch to dev mode on deployed web - it will use production URL
+    // but send dev header for dev features
     try {
       final prefs = await SharedPreferences.getInstance();
       final envIndex = prefs.getInt(_storageKey);
@@ -71,17 +59,22 @@ class EnvironmentNotifier extends StateNotifier<Environment> {
   }
 
   String get apiUrl {
-    // Always respect the user's environment selection
-    // This allows switching between dev and prod on both local and deployed apps
+    // Check if API_URL was set from build (deployed web app)
+    final buildApiUrl = apiUrlFromBuild;
+    final isDeployedWeb = buildApiUrl != null && buildApiUrl.isNotEmpty && kIsWeb;
+    
+    // If deployed web, always use the production backend URL
+    // (localhost won't work from deployed site)
+    // But we'll send X-Dev-Mode header when user selects dev mode
+    if (isDeployedWeb) {
+      return buildApiUrl!;
+    }
+    
+    // For local development, respect environment selection
     switch (state) {
       case Environment.development:
         return 'http://localhost:8080/api/v1';
       case Environment.production:
-        // If API_URL was set from build, use it; otherwise use default production URL
-        final buildApiUrl = apiUrlFromBuild;
-        if (buildApiUrl != null && buildApiUrl.isNotEmpty) {
-          return buildApiUrl;
-        }
         return 'https://blowjobs-backend-production.up.railway.app/api/v1';
     }
   }
