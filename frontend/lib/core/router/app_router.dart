@@ -29,28 +29,40 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final isLoggedIn = authState.isAuthenticated;
       final isLoading = authState.isLoading;
       final hasError = authState.error != null;
-      final isLoggingIn = state.matchedLocation == '/login' ||
-          state.matchedLocation == '/register' ||
-          state.matchedLocation == '/';
+      final isOnLoginPage = state.matchedLocation == '/login';
+      final isOnRegisterPage = state.matchedLocation == '/register';
+      final isOnWelcomePage = state.matchedLocation == '/';
+      final isOnAuthPage = isOnLoginPage || isOnRegisterPage || isOnWelcomePage;
       
       // Don't redirect while authentication is in progress
       if (isLoading) {
         return null;
       }
       
-      // If there's an error on login/register page, stay on that page
-      if (hasError && isLoggingIn) {
+      // CRITICAL: If on login/register page, NEVER redirect away if there's an error
+      // This ensures failed logins stay on the login page
+      if ((isOnLoginPage || isOnRegisterPage) && hasError) {
         return null;
       }
       
-      if (!isLoggedIn && !isLoggingIn) {
+      // If on login/register page and not authenticated, stay there (don't redirect)
+      if ((isOnLoginPage || isOnRegisterPage) && !isLoggedIn) {
+        return null;
+      }
+      
+      // If not logged in and not on auth pages, redirect to welcome
+      if (!isLoggedIn && !isOnAuthPage) {
         return '/';
       }
       
-      // Only redirect to home if authenticated AND not currently on auth pages
-      if (isLoggedIn && isLoggingIn) {
+      // Only redirect to home if authenticated AND currently on welcome page
+      // Don't redirect if already on login/register (let login handler manage navigation)
+      if (isLoggedIn && isOnWelcomePage) {
         return '/home';
       }
+      
+      // If logged in and on login/register page, allow it (login handler will navigate on success)
+      // Don't auto-redirect here to avoid interfering with failed login attempts
       
       return null;
     },

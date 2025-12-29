@@ -40,24 +40,32 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _passwordController.text,
     );
     
-    // Only navigate if login was successful
-    // If login failed, stay on login screen and show error
-    if (success && mounted) {
-      // Wait a moment for state to update
-      await Future.delayed(const Duration(milliseconds: 100));
-      
-      if (mounted) {
-        final authState = ref.read(authStateProvider);
-        // Only navigate if authenticated, not loading, and no error
-        if (authState.isAuthenticated && 
-            !authState.isLoading && 
-            authState.error == null) {
-          // Navigate to home page (swipe screen)
-          context.go('/home');
-        }
-      }
+    // CRITICAL: Only navigate if login was successful
+    // If login failed (success == false), DO NOT navigate - stay on login page
+    if (!success) {
+      // Login failed - error is already set in auth state
+      // Router will keep us on login page because isAuthenticated is false
+      return;
     }
-    // If login failed, stay on login screen - error is already set in state
+    
+    // Login was successful - verify state before navigating
+    if (!mounted) return;
+    
+    // Wait a moment for state to fully update
+    await Future.delayed(const Duration(milliseconds: 150));
+    
+    if (!mounted) return;
+    
+    final authState = ref.read(authStateProvider);
+    
+    // Triple-check: Only navigate if authenticated, not loading, and no error
+    if (authState.isAuthenticated && 
+        !authState.isLoading && 
+        authState.error == null) {
+      // Navigate to home page (swipe screen)
+      context.go('/home');
+    }
+    // If any check fails, stay on login page
   }
 
   @override
