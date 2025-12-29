@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/providers/auth_provider.dart';
+import '../../../../core/providers/environment_provider.dart';
+import '../../../../core/services/api_service.dart';
+import '../../../swipe/presentation/providers/swipe_provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   final Widget child;
@@ -281,6 +284,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 context.push('/swipe-history');
               },
             ),
+            // Dev mode reset button
+            if (ref.read(environmentProvider) == Environment.development) ...[
+              const Divider(height: 32),
+              _ProfileMenuItem(
+                icon: Iconsax.refresh,
+                title: 'Reset All Swipes (Dev Only)',
+                isDestructive: true,
+                onTap: () {
+                  Navigator.pop(context);
+                  _resetSwipes(context);
+                },
+              ),
+            ],
             const Divider(height: 32),
             _ProfileMenuItem(
               icon: Iconsax.logout,
@@ -341,6 +357,74 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _resetSwipes(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        title: const Text('Reset All Swipes?'),
+        content: const Text(
+          'This will delete all your swipe history and reset your stats. This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.warning,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Reset'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      final apiService = ref.read(apiServiceProvider);
+      await apiService.resetSwipes();
+      
+      // Reload the feed
+      ref.read(swipeFeedProvider.notifier).loadFeed();
+      
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Swipes reset successfully!'),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to reset swipes: ${e.toString()}'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      }
+    }
   }
 }
 

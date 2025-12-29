@@ -130,31 +130,12 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
         // Main content
         Column(
           children: [
-            // Stats row
-            _buildStatsRow(swipeState),
-            
-            // Dev reset button
-            if (isDev)
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: ElevatedButton.icon(
-                  onPressed: _resetSwipes,
-                  icon: const Icon(Iconsax.refresh, size: 18),
-                  label: const Text('Reset All Swipes (Dev Only)'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.warning,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  ),
-                ),
-              ),
-            
             // Card stack
             Expanded(
               child: swipeState.isLoading
                 ? _buildLoadingState()
                 : swipeState.cards.isEmpty
-                  ? _buildEmptyState(isRecruiter)
+                  ? _buildEmptyState(isRecruiter, isDev)
                   : _buildCardStack(swipeState.cards),
             ),
             
@@ -207,52 +188,6 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
     );
   }
 
-  Widget _buildStatsRow(SwipeFeedState swipeState) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-      decoration: BoxDecoration(
-        gradient: AppColors.cardGradient,
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.surfaceBright.withOpacity(0.3),
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _StatItem(
-            icon: Iconsax.eye,
-            value: '${swipeState.todayViews}',
-            label: 'Viewed Today',
-          ),
-          Container(
-            width: 1,
-            height: 24,
-            color: AppColors.surfaceBright.withOpacity(0.5),
-          ),
-          _StatItem(
-            icon: Iconsax.heart,
-            value: '${swipeState.todayLikes}',
-            label: 'Likes',
-            valueColor: AppColors.success,
-          ),
-          Container(
-            width: 1,
-            height: 24,
-            color: AppColors.surfaceBright.withOpacity(0.5),
-          ),
-          _StatItem(
-            icon: Iconsax.magic_star,
-            value: '${swipeState.todayMatches}',
-            label: 'Matches',
-            valueColor: AppColors.primary,
-          ),
-        ],
-      ),
-    ).animate().fadeIn(delay: 100.ms);
-  }
 
   Widget _buildLoadingState() {
     return Center(
@@ -286,7 +221,7 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
     );
   }
 
-  Widget _buildEmptyState(bool isRecruiter) {
+  Widget _buildEmptyState(bool isRecruiter, bool isDev) {
     return SingleChildScrollView(
       child: Center(
         child: Padding(
@@ -346,6 +281,20 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                 ),
               ),
+              // Show reset button only in empty state and dev mode
+              if (isDev) ...[
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: _resetSwipes,
+                  icon: const Icon(Iconsax.refresh, size: 18),
+                  label: const Text('Reset All Swipes (Dev Only)'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.warning,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -613,63 +562,4 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen>
   }
 }
 
-class _StatItem extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-  final Color? valueColor;
-
-  const _StatItem({
-    required this.icon,
-    required this.value,
-    required this.label,
-    this.valueColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final displayColor = valueColor ?? AppColors.primary;
-    
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                displayColor.withOpacity(0.15),
-                displayColor.withOpacity(0.08),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(
-            icon,
-            size: 20,
-            color: displayColor,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-            color: displayColor,
-            letterSpacing: -0.5,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textSecondary,
-          ),
-        ),
-      ],
-    );
-  }
-}
 

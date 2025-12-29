@@ -6,6 +6,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../../../core/theme/app_theme.dart';
 import '../providers/matches_provider.dart';
+import '../../../swipe/presentation/providers/swipe_provider.dart';
 
 class MatchesScreen extends ConsumerStatefulWidget {
   const MatchesScreen({super.key});
@@ -33,6 +34,11 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
       backgroundColor: AppColors.surface,
       child: CustomScrollView(
         slivers: [
+          // Compact stats row
+          SliverToBoxAdapter(
+            child: _buildCompactStatsRow(),
+          ),
+          
           // Header
           SliverToBoxAdapter(
             child: Padding(
@@ -159,6 +165,104 @@ class _MatchesScreenState extends ConsumerState<MatchesScreen> {
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildCompactStatsRow() {
+    final swipeState = ref.watch(swipeFeedProvider);
+    
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.surfaceBright.withOpacity(0.5),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _CompactStatItem(
+            icon: Iconsax.eye,
+            value: '${swipeState.todayViews}',
+            label: 'Viewed',
+          ),
+          Container(
+            width: 1,
+            height: 20,
+            color: AppColors.surfaceBright.withOpacity(0.5),
+          ),
+          _CompactStatItem(
+            icon: Iconsax.heart,
+            value: '${swipeState.todayLikes}',
+            label: 'Likes',
+            valueColor: AppColors.success,
+          ),
+          Container(
+            width: 1,
+            height: 20,
+            color: AppColors.surfaceBright.withOpacity(0.5),
+          ),
+          _CompactStatItem(
+            icon: Iconsax.magic_star,
+            value: '${swipeState.todayMatches}',
+            label: 'Matches',
+            valueColor: AppColors.primary,
+          ),
+        ],
+      ),
+    ).animate().fadeIn(delay: 100.ms);
+  }
+}
+
+class _CompactStatItem extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String label;
+  final Color? valueColor;
+
+  const _CompactStatItem({
+    required this.icon,
+    required this.value,
+    required this.label,
+    this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final displayColor = valueColor ?? AppColors.primary;
+    
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          icon,
+          size: 18,
+          color: displayColor,
+        ),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: displayColor,
+            letterSpacing: -0.3,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textSecondary,
+          ),
+        ),
+      ],
     );
   }
 }
