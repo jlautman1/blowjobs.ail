@@ -24,29 +24,11 @@ class EnvironmentNotifier extends StateNotifier<Environment> {
   }
   
   static Environment _determineInitialEnvironment() {
-    // If API_URL is set from build (production), use production
-    final buildApiUrl = apiUrlFromBuild;
-    if (buildApiUrl != null && buildApiUrl.isNotEmpty) {
-      return Environment.production;
-    }
-    
-    // For web builds, default to production
-    if (kIsWeb) {
-      return Environment.production;
-    }
-    
-    // Otherwise default to development
+    // Default to development (can be changed by user)
     return Environment.development;
   }
 
   Future<void> _loadEnvironment() async {
-    // If API_URL is set from build, always use production
-    final buildApiUrl = apiUrlFromBuild;
-    if (buildApiUrl != null && buildApiUrl.isNotEmpty) {
-      state = Environment.production;
-      return;
-    }
-    
     try {
       final prefs = await SharedPreferences.getInstance();
       final envIndex = prefs.getInt(_storageKey);
@@ -54,20 +36,11 @@ class EnvironmentNotifier extends StateNotifier<Environment> {
         state = Environment.values[envIndex];
       }
     } catch (e) {
-      // Default to production if loading fails (especially for web)
-      if (kIsWeb) {
-        state = Environment.production;
-      }
+      // Keep default (development)
     }
   }
 
   Future<void> setEnvironment(Environment env) async {
-    // Don't allow changing environment if API_URL is set from build
-    final buildApiUrl = apiUrlFromBuild;
-    if (buildApiUrl != null && buildApiUrl.isNotEmpty) {
-      return;
-    }
-    
     state = env;
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -78,13 +51,14 @@ class EnvironmentNotifier extends StateNotifier<Environment> {
   }
 
   String get apiUrl {
-    // First check if API_URL was set from build
+    // First check if API_URL was set from build (dart-define)
+    // This allows Netlify build to set the production URL
     final buildApiUrl = apiUrlFromBuild;
     if (buildApiUrl != null && buildApiUrl.isNotEmpty) {
       return buildApiUrl;
     }
     
-    // Otherwise use environment-based URL
+    // Otherwise use environment-based URL (user can switch)
     switch (state) {
       case Environment.development:
         return 'http://localhost:8080/api/v1';
