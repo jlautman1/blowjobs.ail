@@ -311,3 +311,27 @@ func (s *Server) GetSwipeHistory(c *gin.Context) {
 	c.JSON(http.StatusOK, swipes)
 }
 
+// ResetSwipes deletes all swipes for the current user (dev only)
+func (s *Server) ResetSwipes(c *gin.Context) {
+	userID := c.MustGet("user_id").(uuid.UUID)
+	
+	// Only allow in development environment
+	if s.cfg.Environment != "development" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "This endpoint is only available in development"})
+		return
+	}
+	
+	// Delete all swipes for this user
+	_, err := s.db.Exec(`DELETE FROM swipes WHERE swiper_id = $1`, userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reset swipes"})
+		return
+	}
+	
+	// Reset swipe stats
+	s.db.Exec(`UPDATE users SET total_swipes = 0, swipe_streak = 0 WHERE id = $1`, userID)
+	s.db.Exec(`UPDATE daily_streaks SET current_streak = 0 WHERE user_id = $1`, userID)
+	
+	c.JSON(http.StatusOK, gin.H{"message": "Swipes reset successfully"})
+}
+

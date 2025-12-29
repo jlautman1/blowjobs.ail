@@ -8,6 +8,7 @@ class SwipeActionButtons extends StatelessWidget {
   final VoidCallback onLike;
   final VoidCallback onSuperLike;
   final VoidCallback? onUndo;
+  final VoidCallback? onInfo;
   final AnimationController pulseController;
 
   const SwipeActionButtons({
@@ -16,6 +17,7 @@ class SwipeActionButtons extends StatelessWidget {
     required this.onLike,
     required this.onSuperLike,
     this.onUndo,
+    this.onInfo,
     required this.pulseController,
   });
 
@@ -35,41 +37,43 @@ class SwipeActionButtons extends StatelessWidget {
             tooltip: 'Undo',
           ),
           
-          // Pass button
+          // Pass button - Vibrant red
           _ActionButton(
             icon: Iconsax.close_circle,
-            color: AppColors.error,
-            size: 60,
+            color: AppColors.swipeLeft,
+            size: 64,
             onTap: onPass,
             tooltip: 'Skip',
+            isGradient: true,
           ),
           
-          // Super Like button
+          // Super Like button - Vibrant purple with pulse
           AnimatedBuilder(
             animation: pulseController,
             builder: (context, child) {
               return Transform.scale(
-                scale: 1 + (pulseController.value * 0.05),
+                scale: 1 + (pulseController.value * 0.08),
                 child: child,
               );
             },
             child: _ActionButton(
               icon: Iconsax.star5,
-              color: AppColors.primary,
-              size: 52,
+              color: AppColors.swipeUp,
+              size: 56,
               onTap: onSuperLike,
               isGradient: true,
               tooltip: 'Super Like',
             ),
           ),
           
-          // Like button
+          // Like button - Vibrant green
           _ActionButton(
             icon: Iconsax.heart5,
-            color: AppColors.success,
-            size: 60,
+            color: AppColors.swipeRight,
+            size: 64,
             onTap: onLike,
             tooltip: 'Interested',
+            isGradient: true,
           ),
           
           // Info button
@@ -77,9 +81,7 @@ class SwipeActionButtons extends StatelessWidget {
             icon: Iconsax.info_circle,
             color: AppColors.accent,
             size: 48,
-            onTap: () {
-              // TODO: Show job details
-            },
+            onTap: onInfo,
             tooltip: 'Details',
           ),
         ],
@@ -181,14 +183,13 @@ class _ActionButtonState extends State<_ActionButton>
                   : widget.color.withOpacity(_isPressed ? 0.3 : 0.15)
                 : AppColors.surfaceLight,
               gradient: widget.isGradient && isEnabled
-                ? LinearGradient(
-                    colors: [
-                      widget.color.withOpacity(_isPressed ? 0.8 : 1.0),
-                      widget.color.withOpacity(_isPressed ? 0.6 : 0.8),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
+                ? (widget.color == AppColors.swipeRight
+                    ? AppColors.swipeRightGradient
+                    : widget.color == AppColors.swipeLeft
+                        ? AppColors.swipeLeftGradient
+                        : widget.color == AppColors.swipeUp
+                            ? AppColors.swipeUpGradient
+                            : AppColors.primaryGradient)
                 : null,
               border: Border.all(
                 color: isEnabled 

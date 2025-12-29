@@ -213,7 +213,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               title: 'My Profile',
               onTap: () {
                 Navigator.pop(context);
-                // TODO: Navigate to profile
+                context.push('/profile');
               },
             ),
             _ProfileMenuItem(
@@ -221,7 +221,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               title: 'Settings',
               onTap: () {
                 Navigator.pop(context);
-                // TODO: Navigate to settings
+                context.push('/settings');
               },
             ),
             _ProfileMenuItem(
@@ -229,7 +229,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               title: 'Achievements',
               onTap: () {
                 Navigator.pop(context);
-                // TODO: Navigate to achievements
+                context.push('/achievements');
+              },
+            ),
+            _ProfileMenuItem(
+              icon: Iconsax.heart,
+              title: 'Swipe History',
+              onTap: () {
+                Navigator.pop(context);
+                context.push('/swipe-history');
               },
             ),
             const Divider(height: 32),

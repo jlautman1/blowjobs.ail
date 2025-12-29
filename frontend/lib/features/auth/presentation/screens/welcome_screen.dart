@@ -1,20 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconsax/iconsax.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/providers/environment_provider.dart';
 import '../widgets/animated_background.dart';
 import '../widgets/gold_button.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final environment = ref.watch(environmentProvider);
+    final environmentNotifier = ref.read(environmentProvider.notifier);
+    
     return Scaffold(
       body: Stack(
         children: [
           // Animated gradient background
           const AnimatedBackground(),
+          
+          // Environment switcher
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: _EnvironmentSwitcher(
+                  currentEnvironment: environment,
+                  onChanged: (env) => environmentNotifier.setEnvironment(env),
+                ),
+              ),
+            ),
+          ),
           
           // Content
           SafeArea(
@@ -148,6 +168,92 @@ class WelcomeScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _EnvironmentSwitcher extends StatelessWidget {
+  final Environment currentEnvironment;
+  final Function(Environment) onChanged;
+
+  const _EnvironmentSwitcher({
+    required this.currentEnvironment,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.surfaceBright),
+      ),
+      child: PopupMenuButton<Environment>(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                currentEnvironment == Environment.development
+                    ? Iconsax.code
+                    : Iconsax.global,
+                size: 16,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                currentEnvironment == Environment.development
+                    ? 'Dev'
+                    : 'Prod',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(width: 4),
+              const Icon(
+                Iconsax.arrow_down_1,
+                size: 12,
+                color: AppColors.textSecondary,
+              ),
+            ],
+          ),
+        ),
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: Environment.development,
+            child: Row(
+              children: [
+                const Icon(Iconsax.code, size: 18, color: AppColors.textPrimary),
+                const SizedBox(width: 12),
+                const Text('Development'),
+                if (currentEnvironment == Environment.development) ...[
+                  const Spacer(),
+                  const Icon(Iconsax.tick_circle, size: 18, color: AppColors.primary),
+                ],
+              ],
+            ),
+          ),
+          PopupMenuItem(
+            value: Environment.production,
+            child: Row(
+              children: [
+                const Icon(Iconsax.global, size: 18, color: AppColors.textPrimary),
+                const SizedBox(width: 12),
+                const Text('Production'),
+                if (currentEnvironment == Environment.production) ...[
+                  const Spacer(),
+                  const Icon(Iconsax.tick_circle, size: 18, color: AppColors.primary),
+                ],
+              ],
+            ),
+          ),
+        ],
+        onSelected: onChanged,
+      ),
     );
   }
 }

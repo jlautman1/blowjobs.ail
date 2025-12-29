@@ -109,6 +109,7 @@ func (s *Server) setupRouter() {
 			{
 				swipes.POST("", s.RecordSwipe)
 				swipes.GET("/history", s.GetSwipeHistory)
+				swipes.DELETE("/reset", s.ResetSwipes) // Dev only
 			}
 
 			// Match routes
