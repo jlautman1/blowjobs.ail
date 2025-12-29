@@ -220,13 +220,13 @@ class AppTheme {
       ),
       
       // Card theme - Premium look with vibrant shadows
-      cardTheme: CardThemeData(
+      cardTheme: const CardTheme(
         color: AppColors.surface,
         elevation: 0,
-        shadowColor: AppColors.primary.withOpacity(0.1),
+        shadowColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
       ),
       
@@ -330,11 +330,11 @@ class AppTheme {
       ),
       
       // Dialog theme
-      dialogTheme: DialogThemeData(
+      dialogTheme: const DialogTheme(
         backgroundColor: AppColors.surface,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.all(Radius.circular(24)),
         ),
       ),
       
